@@ -9,33 +9,67 @@ import java.util.UUID;
 @Entity // This tells Hibernate to make a table out of this class
 public class Session {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID sessionID;
+
     private String sessionTitle;
-    private UUID timeslotID;
+
+    private UUID timeSlotID;
+
     private UUID speakerID;
+
     private UUID roomID;
+
     private UUID countID;
 
-    public Session(String sessionTitle, UUID sessionID){
-        this.sessionTitle = sessionTitle;
-        this.sessionID = sessionID;
+    public Session() {
     }
 
-    public UUID getSessionID(){
-        return this.sessionID;
-    }
-
-    private void deleteSession(UUID sessionID){
-
-    }
-
-    private void updateSession(UUID sessionID, String sessionTitle){
-        this.sessionID = sessionID;
+    public Session(String sessionTitle) {
         this.sessionTitle = sessionTitle;
     }
 
-    private Session getSession(UUID sessionID){
-        return this;
+    public UUID getSessionID() {
+        return sessionID;
+    }
+
+    public String getSessionTitle() {
+        return sessionTitle;
+    }
+
+    public void setSessionTitle(String sessionTitle) {
+        this.sessionTitle = sessionTitle;
+    }
+
+    public UUID getTimeSlotID() {
+        return timeSlotID;
+    }
+
+    public void setTimeSlotID(UUID timeSlotID) {
+        this.timeSlotID = timeSlotID;
+    }
+
+    public UUID getSpeakerID() {
+        return speakerID;
+    }
+
+    public void setSpeakerID(UUID speakerID) {
+        this.speakerID = speakerID;
+    }
+
+    public UUID getRoomID() {
+        return roomID;
+    }
+
+    public void setRoomID(UUID roomID) {
+        this.roomID = roomID;
+    }
+
+    public UUID getCountID() {
+        return countID;
+    }
+
+    public void setCountID(UUID countID) {
+        this.countID = countID;
     }
 }

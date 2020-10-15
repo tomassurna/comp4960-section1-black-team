@@ -9,33 +9,58 @@ import java.util.UUID;
 @Entity // This tells Hibernate to make a table out of this class
 public class Speaker {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID speakerID;
+
     private String speakerName;
+
     private String email;
+
     private String everydayNumber;
+
     private String dayOfNumber;
 
-    public Speaker(String speakerName, String email){
+    public Speaker() {
+    }
+
+    public Speaker(String speakerName, String email) {
         this.speakerName = speakerName;
         this.email = email;
     }
 
-    public void deleteSpeaker(UUID speakerID){
-
+    public UUID getSpeakerID() {
+        return speakerID;
     }
 
-    public void updateSpeaker(UUID speakerID, String newName, String newEmail){
-        this.speakerID = speakerID;
-        this.speakerName = newName;
-        this.email = newEmail;
+    public String getSpeakerName() {
+        return speakerName;
     }
 
-    public UUID getSpeakerID(){
-        return this.speakerID;
+    public void setSpeakerName(String speakerName) {
+        this.speakerName = speakerName;
     }
 
-    private Speaker getSpeaker(){
-        return this;
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEverydayNumber() {
+        return everydayNumber;
+    }
+
+    public void setEverydayNumber(String everydayNumber) {
+        this.everydayNumber = everydayNumber;
+    }
+
+    public String getDayOfNumber() {
+        return dayOfNumber;
+    }
+
+    public void setDayOfNumber(String dayOfNumber) {
+        this.dayOfNumber = dayOfNumber;
     }
 }

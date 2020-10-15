@@ -9,44 +9,39 @@ import java.util.UUID;
 @Entity // This tells Hibernate to make a table out of this class
 public class Room {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID roomID;
+
     private String name;
+
     private int capacity;
 
-    public Room(UUID roomID, String name, int capacity){
-        this.roomID = roomID;
-        updateRoom(name, capacity);
+    public Room() {
     }
 
-    public Room(UUID roomID){
-        this.roomID = roomID;
-        updateRoom("tempName", 10);
-    }
-
-    public UUID getRoomId() {
-        return this.roomID;
-    }
-
-    public int getCapacity(){
-        return this.capacity;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    private void deleteRoom(UUID roomID){
-
-    }
-
-    private void updateRoom(String name, int capacity){
+    public Room(String name, int capacity) {
         this.name = name;
         this.capacity = capacity;
     }
 
-    private Room getRoom(UUID roomID){
-        return this;
+    public UUID getRoomID() {
+        return roomID;
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
 }

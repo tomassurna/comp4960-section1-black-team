@@ -10,30 +10,38 @@ import java.util.UUID;
 @Entity // This tells Hibernate to make a table out of this class
 public class TimeSlot {
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID timeSlotID;
+
     private Time startTime;
+
     private Time endTime;
 
-    public TimeSlot(Time startTime, Time endTime){
+    public TimeSlot() {
+    }
+
+    public TimeSlot(Time startTime, Time endTime) {
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
     public UUID getTimeSlotID() {
-        return this.timeSlotID;
+        return timeSlotID;
     }
 
-    public Time getTimeSlotStart(){
-        return this.startTime;
+    public Time getStartTime() {
+        return startTime;
     }
 
-    public Time getTimeSlotEnd(){
-        return this.endTime;
+    public void setStartTime(Time startTime) {
+        this.startTime = startTime;
     }
 
-    private TimeSlot retrieveTimeSlot(UUID timeSlotID){
-        return this;
+    public Time getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Time endTime) {
+        this.endTime = endTime;
     }
 }
