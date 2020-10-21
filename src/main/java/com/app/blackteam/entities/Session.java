@@ -7,11 +7,7 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Session {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID sessionID;
-
+public class Session extends PersistableEntity{
     private String sessionTitle;
 
     private UUID timeSlotID;
@@ -29,47 +25,48 @@ public class Session {
         this.sessionTitle = sessionTitle;
     }
 
-    public UUID getSessionID() {
-        return sessionID;
-    }
-
     public String getSessionTitle() {
         return sessionTitle;
     }
 
-    public void setSessionTitle(String sessionTitle) {
+    public Session setSessionTitle(String sessionTitle) {
         this.sessionTitle = sessionTitle;
+        return this;
     }
 
     public UUID getTimeSlotID() {
         return timeSlotID;
     }
 
-    public void setTimeSlotID(UUID timeSlotID) {
+    public Session setTimeSlotID(UUID timeSlotID) {
         this.timeSlotID = timeSlotID;
+        return this;
     }
 
     public UUID getSpeakerID() {
         return speakerID;
     }
 
-    public void setSpeakerID(UUID speakerID) {
+    public Session setSpeakerID(UUID speakerID) {
         this.speakerID = speakerID;
+        return this;
     }
 
     public UUID getRoomID() {
         return roomID;
     }
 
-    public void setRoomID(UUID roomID) {
+    public Session setRoomID(UUID roomID) {
         this.roomID = roomID;
+        return this;
     }
 
     public UUID getCountID() {
         return countID;
     }
 
-    public void setCountID(UUID countID) {
+    public Session setCountID(UUID countID) {
         this.countID = countID;
+        return this;
     }
 }
