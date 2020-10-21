@@ -7,11 +7,7 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class Room {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID roomID;
-
+public class Room extends PersistableEntity{
     private String name;
 
     private int capacity;
@@ -24,24 +20,22 @@ public class Room {
         this.capacity = capacity;
     }
 
-    public UUID getRoomID() {
-        return roomID;
-    }
-
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Room setName(String name) {
         this.name = name;
+        return this;
     }
 
     public int getCapacity() {
         return capacity;
     }
 
-    public void setCapacity(int capacity) {
+    public Room setCapacity(int capacity) {
         this.capacity = capacity;
+        return this;
     }
 
 }

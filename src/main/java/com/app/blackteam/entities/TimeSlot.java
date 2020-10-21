@@ -1,18 +1,10 @@
 package com.app.blackteam.entities;
 
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import java.sql.Time;
-import java.util.UUID;
 
 @Entity // This tells Hibernate to make a table out of this class
-public class TimeSlot {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID timeSlotID;
-
+public class TimeSlot extends PersistableEntity {
     private Time startTime;
 
     private Time endTime;
@@ -25,23 +17,21 @@ public class TimeSlot {
         this.endTime = endTime;
     }
 
-    public UUID getTimeSlotID() {
-        return timeSlotID;
-    }
-
     public Time getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public TimeSlot setStartTime(Time startTime) {
         this.startTime = startTime;
+        return this;
     }
 
     public Time getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(Time endTime) {
+    public TimeSlot setEndTime(Time endTime) {
         this.endTime = endTime;
+        return this;
     }
 }
