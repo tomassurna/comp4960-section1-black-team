@@ -15,6 +15,7 @@
               <option value="process-resources" />
               <option value="spring-boot:build-image" />
               <option value="spring-boot:run" />
+              <option value="-e" />
             </list>
           </option>
           <option name="pomFileName" />

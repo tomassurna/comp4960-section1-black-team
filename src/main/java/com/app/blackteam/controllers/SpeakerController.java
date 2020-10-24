@@ -15,58 +15,45 @@ import java.util.stream.StreamSupport;
 @Controller
 public class SpeakerController {
 
-  private final SpeakerRepository speakerRepository;
+    private final SpeakerRepository speakerRepository;
 
-  public SpeakerController(SpeakerRepository SpeakerRepository) {
-    this.speakerRepository = SpeakerRepository;
-  }
+    public SpeakerController(SpeakerRepository SpeakerRepository) {
+        this.speakerRepository = SpeakerRepository;
+    }
 
-  @ResponseBody
-  @GetMapping(path = "/all")
-  public List<Speaker> getAllSpeakers() {
-    return StreamSupport.stream(speakerRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
-  }
+    @ResponseBody
+    @GetMapping(path = "/all")
+    public List<Speaker> getAllSpeakers() {
+        return StreamSupport.stream(speakerRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
-  @ResponseBody
-  @GetMapping
-  public Optional<Speaker> getAllTeamMates(@RequestBody UUID id) {
-    return speakerRepository.findById(id);
-  }
+    @ResponseBody
+    @GetMapping(path = "/{id}")
+    public Optional<Speaker> getSpeakerById(@PathVariable UUID id) {
+        return speakerRepository.findById(id);
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/addSpeaker")
-  public void addSpeaker(
-      @RequestBody String speakerName,
-      @RequestBody String speakerEmail,
-      @RequestBody(required = false) String everyDayNumber,
-      @RequestBody(required = false) String dayOfNumber) {
-    speakerRepository.save(
-        new Speaker(speakerName, speakerEmail)
-            .setEverydayNumber(everyDayNumber)
-            .setDayOfNumber(dayOfNumber));
-  }
+    @ResponseBody
+    @RequestMapping(path = "/addSpeaker", method = RequestMethod.POST)
+    public Speaker addSpeaker(@RequestBody Speaker speaker) {
+        // We don't save the object directly because we want JDBC to generate the Id value
+        return speakerRepository.save(
+                new Speaker(speaker.getSpeakerName(), speaker.getEmail())
+                        .setEverydayNumber(speaker.getEverydayNumber())
+                        .setDayOfNumber(speaker.getDayOfNumber()));
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/updateSpeaker")
-  public void updateSpeaker(
-      @RequestBody String speakerName,
-      @RequestBody String speakerEmail,
-      @RequestBody(required = false) String everyDayNumber,
-      @RequestBody(required = false) String dayOfNumber) {
-    Speaker speaker =
-        new Speaker(speakerName, speakerEmail)
-            .setEverydayNumber(everyDayNumber)
-            .setDayOfNumber(dayOfNumber);
+    @ResponseBody
+    @PostMapping(path = "/updateSpeaker")
+    public Speaker updateSpeaker(@RequestBody Speaker speaker) {
+        speaker.setIsNew(false);
+        return speakerRepository.save(speaker);
+    }
 
-    speaker.setIsNew(false);
-
-    speakerRepository.save(speaker);
-  }
-
-  @ResponseBody
-  @PostMapping(path = "/deleteSpeaker")
-  public void deleteSpeaker(@RequestBody UUID id) {
-    speakerRepository.deleteById(id);
-  }
+    @ResponseBody
+    @PostMapping(path = "/deleteSpeaker")
+    public void deleteSpeaker(@RequestBody UUID id) {
+        speakerRepository.deleteById(id);
+    }
 }

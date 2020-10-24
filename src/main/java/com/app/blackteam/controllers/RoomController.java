@@ -15,44 +15,43 @@ import java.util.stream.StreamSupport;
 @Controller
 public class RoomController {
 
-  private final RoomRepository roomRepository;
+    private final RoomRepository roomRepository;
 
-  public RoomController(RoomRepository roomRepository) {
-    this.roomRepository = roomRepository;
-  }
+    public RoomController(RoomRepository roomRepository) {
+        this.roomRepository = roomRepository;
+    }
 
-  @ResponseBody
-  @GetMapping(path = "/all")
-  public List<Room> getAllRooms() {
-    return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
-  }
+    @ResponseBody
+    @GetMapping(path = "/all")
+    public List<Room> getAllRooms() {
+        return StreamSupport.stream(roomRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
-  @ResponseBody
-  @GetMapping
-  public Optional<Room> getAllTeamMates(@RequestBody UUID id) {
-    return roomRepository.findById(id);
-  }
+    @ResponseBody
+    @GetMapping(path = "/{id}")
+    public Optional<Room> getRoomById(@PathVariable UUID id) {
+        return roomRepository.findById(id);
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/addRoom")
-  public void addRoom(@RequestBody String name, @RequestBody int capacity) {
-    roomRepository.save(new Room(name, capacity));
-  }
+    @ResponseBody
+    @PostMapping(path = "/addRoom")
+    public Room addRoom(@RequestBody Room room) {
+        // We don't save the object directly because we want JDBC to generate the Id value
+        return roomRepository.save(new Room(room.getName(), room.getCapacity()));
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/updateRoom")
-  public void updateRoom(@RequestBody String name, @RequestBody int capacity) {
-    Room room = new Room(name, capacity);
+    @ResponseBody
+    @PostMapping(path = "/updateRoom")
+    public Room updateRoom(@RequestBody Room room) {
+        room.setIsNew(false);
 
-    room.setIsNew(false);
+        return roomRepository.save(room);
+    }
 
-    roomRepository.save(room);
-  }
-
-  @ResponseBody
-  @PostMapping(path = "/deleteRoom")
-  public void deleteRoom(@RequestBody UUID id) {
-    roomRepository.deleteById(id);
-  }
+    @ResponseBody
+    @PostMapping(path = "/deleteRoom")
+    public void deleteRoom(@RequestBody UUID id) {
+        roomRepository.deleteById(id);
+    }
 }

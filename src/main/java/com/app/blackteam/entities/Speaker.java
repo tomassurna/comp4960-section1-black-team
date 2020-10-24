@@ -2,7 +2,7 @@ package com.app.blackteam.entities;
 
 import javax.persistence.Entity;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 public class Speaker extends PersistableEntity {
     private String speakerName;
 

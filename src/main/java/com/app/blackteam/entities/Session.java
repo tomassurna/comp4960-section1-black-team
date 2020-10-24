@@ -1,22 +1,22 @@
 package com.app.blackteam.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import java.util.UUID;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
 
-@Entity // This tells Hibernate to make a table out of this class
-public class Session extends PersistableEntity{
+@Entity
+public class Session extends PersistableEntity {
     private String sessionTitle;
 
-    private UUID timeSlotID;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private TimeSlot timeSlot;
 
-    private UUID speakerID;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Speaker speaker;
 
-    private UUID roomID;
-
-    private UUID countID;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Room room;
 
     public Session() {
     }
@@ -34,39 +34,30 @@ public class Session extends PersistableEntity{
         return this;
     }
 
-    public UUID getTimeSlotID() {
-        return timeSlotID;
+    public TimeSlot getTimeSlot() {
+        return timeSlot;
     }
 
-    public Session setTimeSlotID(UUID timeSlotID) {
-        this.timeSlotID = timeSlotID;
+    public Session setTimeSlot(TimeSlot timeSlot) {
+        this.timeSlot = timeSlot;
         return this;
     }
 
-    public UUID getSpeakerID() {
-        return speakerID;
+    public Speaker getSpeaker() {
+        return speaker;
     }
 
-    public Session setSpeakerID(UUID speakerID) {
-        this.speakerID = speakerID;
+    public Session setSpeaker(Speaker speaker) {
+        this.speaker = speaker;
         return this;
     }
 
-    public UUID getRoomID() {
-        return roomID;
+    public Room getRoom() {
+        return room;
     }
 
-    public Session setRoomID(UUID roomID) {
-        this.roomID = roomID;
-        return this;
-    }
-
-    public UUID getCountID() {
-        return countID;
-    }
-
-    public Session setCountID(UUID countID) {
-        this.countID = countID;
+    public Session setRoom(Room room) {
+        this.room = room;
         return this;
     }
 }
