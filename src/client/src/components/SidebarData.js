@@ -1,36 +1,37 @@
-import React from 'react';
-import * as FaIcons from 'react-icons/fa';
-import * as AiIcons from 'react-icons/ai';
-
-export const SidebarData = [
+export default [
   {
-    title: 'Calendar',
-    path: '/',
-    icon: <FaIcons.FaRegCalendarAlt />,
-    cName: 'nav-text'
+    _tag: 'CSidebarNavTitle',
+    _children: ['pages']
   },
   {
-    title: 'Sessions',
-    path: '/sessions',
-    icon: <AiIcons.AiFillMessage />,
-    cName: 'nav-text'
+    _tag: 'CSidebarNavItem',
+    name: 'Calendar',
+    to: '/pages/calendar',
+    icon: 'cil-calendar',
   },
   {
-    title: 'Timeslots',
-    path: '/timeslots',
-    icon: <FaIcons.FaHourglassEnd />,
-    cName: 'nav-text'
+    _tag: 'CSidebarNavItem',
+    name: 'Sessions',
+    to: '/pages/sessions',
+    icon: 'cil-list',
   },
   {
-    title: 'Speakers',
-    path: '/speakers',
-    icon: <FaIcons.FaUserFriends />,
-    cName: 'nav-text'
+    _tag: 'CSidebarNavItem',
+    name: 'Timeslots',
+    to: '/pages/timeslots',
+    icon: 'cil-chart-pie',
   },
   {
-    title: 'Rooms',
-    path: '/rooms',
-    icon: <FaIcons.FaWarehouse />,
-    cName: 'nav-text'
+    _tag: 'CSidebarNavItem',
+    name: 'Speakers',
+    to: '/pages/speakers',
+    icon: 'cil-user',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Rooms',
+    to: '/pages/rooms',
+    icon: 'cil-map',
   }
-];
+]
+

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Rooms() {
+const Rooms = () => {
   return (
     <div className='rooms'>
       <h1>Rooms</h1>

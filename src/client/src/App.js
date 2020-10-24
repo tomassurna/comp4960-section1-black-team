@@ -1,28 +1,34 @@
-import React from 'react';
-import './App.css';
-import Navbar from './components/Navbar';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import Calendar from './pages/Calendar.js';
-import Sessions from './pages/Sessions.js';
-import Timeslots from './pages/Timeslots.js';
-import Speakers from './pages/Speakers.js';
-import Rooms from './pages/Rooms.js';
+import React, { Component } from 'react';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import './scss/style.scss';
 
-function App() {
-  return (
-    <>
-      <Router>
-        <Navbar />
-        <Switch>
-          <Route path='/' exact component={Calendar} />
-          <Route path='/sessions' component={Sessions} />
-          <Route path='/timeslots' component={Timeslots} />
-          <Route path='/speakers' component={Speakers} />
-          <Route path='/rooms' component={Rooms} />
-        </Switch>
-      </Router>
-    </>
-  );
+const loading = (
+  <div className="pt-3 text-center">
+    <div className="sk-spinner sk-spinner-pulse"></div>
+  </div>
+)
+
+// Containers (Main pages)
+const TheLayout = React.lazy(() => import('./components/TheLayout'));
+
+// Error Pages
+const Page404 = React.lazy(() => import('./pages/errors/Page404'));
+const Page500 = React.lazy(() => import('./pages/errors/Page500'));
+
+class App extends Component {
+  render() {
+    return (
+      <HashRouter>
+          <React.Suspense fallback={loading}>
+            <Switch>
+              <Route exact path="/404" name="Page 404" render={props => <Page404 {...props}/>} />
+              <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
+              <Route path="/" name="Home" render={props => <TheLayout {...props}/>} />
+            </Switch>
+          </React.Suspense>
+      </HashRouter>
+    );
+  }
 }
 
 export default App;
