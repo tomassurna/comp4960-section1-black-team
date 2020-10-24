@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Timeslots() {
+const Timeslots = () => {
   return (
     <div className='timeslots'>
       <h1>Timeslots</h1>
