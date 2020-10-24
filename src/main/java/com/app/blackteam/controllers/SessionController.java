@@ -15,54 +15,47 @@ import java.util.stream.StreamSupport;
 @Controller
 public class SessionController {
 
-  private final SessionRepository sessionRepository;
+    private final SessionRepository sessionRepository;
 
-  public SessionController(SessionRepository sessionRepository) {
-    this.sessionRepository = sessionRepository;
-  }
+    public SessionController(SessionRepository sessionRepository) {
+        this.sessionRepository = sessionRepository;
+    }
 
-  @ResponseBody
-  @GetMapping(path = "/all")
-  public List<Session> getAllSessions() {
-    return StreamSupport.stream(sessionRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
-  }
+    @ResponseBody
+    @GetMapping(path = "/all")
+    public List<Session> getAllSessions() {
+        return StreamSupport.stream(sessionRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
-  @ResponseBody
-  @GetMapping
-  public Optional<Session> getAllTeamMates(@RequestBody UUID id) {
-    return sessionRepository.findById(id);
-  }
+    @ResponseBody
+    @GetMapping(path = "/{id}")
+    public Optional<Session> getSessionById(@PathVariable UUID id) {
+        return sessionRepository.findById(id);
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/addSession")
-  public void addSession(@RequestBody String name) {
-    sessionRepository.save(new Session(name));
-  }
+    @ResponseBody
+    @PostMapping(path = "/addSession")
+    public Session addSession(@RequestBody Session session) {
+        // We don't save the object directly because we want JDBC to generate the Id value
+        return sessionRepository.save(
+                new Session(session.getSessionTitle())
+                        .setRoom(session.getRoom())
+                        .setSpeaker(session.getSpeaker())
+                        .setTimeSlot(session.getTimeSlot()));
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/updateSession")
-  public void updateSession(
-      @RequestBody String name,
-      @RequestBody(required = false) UUID timeSlotId,
-      @RequestBody(required = false) UUID speakerId,
-      @RequestBody(required = false) UUID roomId,
-      @RequestBody(required = false) UUID countId) {
-    Session session =
-        new Session(name)
-            .setTimeSlotID(timeSlotId)
-            .setSpeakerID(speakerId)
-            .setRoomID(roomId)
-            .setCountID(countId);
+    @ResponseBody
+    @PostMapping(path = "/updateSession")
+    public Session updateSession(@RequestBody Session session) {
+        session.setIsNew(false);
 
-    session.setIsNew(false);
+        return sessionRepository.save(session);
+    }
 
-    sessionRepository.save(session);
-  }
-
-  @ResponseBody
-  @PostMapping(path = "/deleteSession")
-  public void deleteSession(@RequestBody UUID id) {
-    sessionRepository.deleteById(id);
-  }
+    @ResponseBody
+    @PostMapping(path = "/deleteSession")
+    public void deleteSession(@RequestBody UUID id) {
+        sessionRepository.deleteById(id);
+    }
 }

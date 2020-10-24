@@ -5,7 +5,6 @@ import com.app.blackteam.repositories.TimeSlotRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Time;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -16,44 +15,43 @@ import java.util.stream.StreamSupport;
 @Controller
 public class TimeSlotController {
 
-  private final TimeSlotRepository timeSlotRepository;
+    private final TimeSlotRepository timeSlotRepository;
 
-  public TimeSlotController(TimeSlotRepository timeSlotRepository) {
-    this.timeSlotRepository = timeSlotRepository;
-  }
+    public TimeSlotController(TimeSlotRepository timeSlotRepository) {
+        this.timeSlotRepository = timeSlotRepository;
+    }
 
-  @ResponseBody
-  @GetMapping(path = "/all")
-  public List<TimeSlot> getAllTimeSlots() {
-    return StreamSupport.stream(timeSlotRepository.findAll().spliterator(), false)
-        .collect(Collectors.toList());
-  }
+    @ResponseBody
+    @GetMapping(path = "/all")
+    public List<TimeSlot> getAllTimeSlots() {
+        return StreamSupport.stream(timeSlotRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
-  @ResponseBody
-  @GetMapping
-  public Optional<TimeSlot> getAllTeamMates(@RequestBody UUID id) {
-    return timeSlotRepository.findById(id);
-  }
+    @ResponseBody
+    @GetMapping(path = "/{id}")
+    public Optional<TimeSlot> getTimeSlotById(@PathVariable UUID id) {
+        return timeSlotRepository.findById(id);
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/addTimeSlot")
-  public void addTimeSlot(@RequestBody Time startTime, @RequestBody Time endTime) {
-    timeSlotRepository.save(new TimeSlot(startTime, endTime));
-  }
+    @ResponseBody
+    @PostMapping(path = "/addTimeSlot")
+    public void addTimeSlot(@RequestBody TimeSlot timeSlot) {
+        // We don't save the object directly because we want JDBC to generate the Id value
+        timeSlotRepository.save(new TimeSlot(timeSlot.getStartTime(), timeSlot.getEndTime()));
+    }
 
-  @ResponseBody
-  @PostMapping(path = "/updateTimeSlot")
-  public void updateTimeSlot(@RequestBody Time startTime, @RequestBody Time endTime) {
-    TimeSlot timeSlot = new TimeSlot(startTime, endTime);
+    @ResponseBody
+    @PostMapping(path = "/updateTimeSlot")
+    public void updateTimeSlot(@RequestBody TimeSlot timeSlot) {
+        timeSlot.setIsNew(false);
 
-    timeSlot.setIsNew(false);
+        timeSlotRepository.save(timeSlot);
+    }
 
-    timeSlotRepository.save(timeSlot);
-  }
-
-  @ResponseBody
-  @PostMapping(path = "/deleteTimeSlot")
-  public void deleteTimeSlot(@RequestBody UUID id) {
-    timeSlotRepository.deleteById(id);
-  }
+    @ResponseBody
+    @PostMapping(path = "/deleteTimeSlot")
+    public void deleteTimeSlot(@RequestBody UUID id) {
+        timeSlotRepository.deleteById(id);
+    }
 }

@@ -3,7 +3,7 @@ package com.app.blackteam.entities;
 import javax.persistence.Entity;
 import java.sql.Time;
 
-@Entity // This tells Hibernate to make a table out of this class
+@Entity
 public class TimeSlot extends PersistableEntity {
     private Time startTime;
 
