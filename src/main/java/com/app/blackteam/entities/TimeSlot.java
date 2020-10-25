@@ -1,12 +1,15 @@
 package com.app.blackteam.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import java.sql.Time;
 
 @Entity
 public class TimeSlot extends PersistableEntity {
+    @Column(nullable = false)
     private Time startTime;
 
+    @Column(nullable = false)
     private Time endTime;
 
     public TimeSlot() {
