@@ -5,6 +5,7 @@ import com.app.blackteam.repositories.SpeakerRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,23 +38,19 @@ public class SpeakerController {
     @ResponseBody
     @RequestMapping(path = "/addSpeaker", method = RequestMethod.POST)
     public Speaker addSpeaker(@RequestBody Speaker speaker) {
-        // We don't save the object directly because we want JDBC to generate the Id value
-        return speakerRepository.save(
-                new Speaker(speaker.getSpeakerName(), speaker.getEmail())
-                        .setEverydayNumber(speaker.getEverydayNumber())
-                        .setDayOfNumber(speaker.getDayOfNumber()));
+        speaker.setIsNew(true);
+        return speakerRepository.save(speaker);
     }
 
     @ResponseBody
     @PostMapping(path = "/updateSpeaker")
     public Speaker updateSpeaker(@RequestBody Speaker speaker) {
-        speaker.setIsNew(false);
         return speakerRepository.save(speaker);
     }
 
     @ResponseBody
     @PostMapping(path = "/deleteSpeaker")
-    public void deleteSpeaker(@RequestBody UUID id) {
-        speakerRepository.deleteById(id);
+    public void deleteSpeaker(@RequestBody Collection<UUID> ids) {
+        ids.forEach(speakerRepository::deleteById);
     }
 }

@@ -1,11 +1,14 @@
 package com.app.blackteam.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 
 @Entity
 public class Room extends PersistableEntity {
+    @Column(nullable = false)
     private String name;
 
+    @Column(nullable = false)
     private int capacity;
 
     public Room() {

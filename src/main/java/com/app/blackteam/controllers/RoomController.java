@@ -5,6 +5,7 @@ import com.app.blackteam.repositories.RoomRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,21 +38,19 @@ public class RoomController {
     @ResponseBody
     @PostMapping(path = "/addRoom")
     public Room addRoom(@RequestBody Room room) {
-        // We don't save the object directly because we want JDBC to generate the Id value
-        return roomRepository.save(new Room(room.getName(), room.getCapacity()));
+        room.setIsNew(true);
+        return roomRepository.save(room);
     }
 
     @ResponseBody
     @PostMapping(path = "/updateRoom")
     public Room updateRoom(@RequestBody Room room) {
-        room.setIsNew(false);
-
         return roomRepository.save(room);
     }
 
     @ResponseBody
     @PostMapping(path = "/deleteRoom")
-    public void deleteRoom(@RequestBody UUID id) {
-        roomRepository.deleteById(id);
+    public void deleteRoom(@RequestBody Collection<UUID> ids) {
+        ids.forEach(roomRepository::deleteById);
     }
 }

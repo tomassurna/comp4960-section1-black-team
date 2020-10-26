@@ -9,13 +9,13 @@ import java.util.UUID;
 public class PersistableEntity implements Persistable<UUID> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @Transient
     private boolean isNew;
 
     public PersistableEntity() {
-        isNew = true;
     }
 
     @Override

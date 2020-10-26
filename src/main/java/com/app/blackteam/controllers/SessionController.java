@@ -5,6 +5,7 @@ import com.app.blackteam.repositories.SessionRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,25 +38,19 @@ public class SessionController {
     @ResponseBody
     @PostMapping(path = "/addSession")
     public Session addSession(@RequestBody Session session) {
-        // We don't save the object directly because we want JDBC to generate the Id value
-        return sessionRepository.save(
-                new Session(session.getSessionTitle())
-                        .setRoom(session.getRoom())
-                        .setSpeaker(session.getSpeaker())
-                        .setTimeSlot(session.getTimeSlot()));
+        session.setIsNew(true);
+        return sessionRepository.save(session);
     }
 
     @ResponseBody
     @PostMapping(path = "/updateSession")
     public Session updateSession(@RequestBody Session session) {
-        session.setIsNew(false);
-
         return sessionRepository.save(session);
     }
 
     @ResponseBody
     @PostMapping(path = "/deleteSession")
-    public void deleteSession(@RequestBody UUID id) {
-        sessionRepository.deleteById(id);
+    public void deleteSession(@RequestBody Collection<UUID> ids) {
+        ids.forEach(sessionRepository::deleteById);
     }
 }

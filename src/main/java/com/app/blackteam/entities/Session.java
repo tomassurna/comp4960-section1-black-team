@@ -1,12 +1,10 @@
 package com.app.blackteam.entities;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 public class Session extends PersistableEntity {
+    @Column(nullable = false)
     private String sessionTitle;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

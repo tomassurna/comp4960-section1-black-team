@@ -5,6 +5,7 @@ import com.app.blackteam.repositories.TimeSlotRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -36,22 +37,20 @@ public class TimeSlotController {
 
     @ResponseBody
     @PostMapping(path = "/addTimeSlot")
-    public void addTimeSlot(@RequestBody TimeSlot timeSlot) {
-        // We don't save the object directly because we want JDBC to generate the Id value
-        timeSlotRepository.save(new TimeSlot(timeSlot.getStartTime(), timeSlot.getEndTime()));
+    public TimeSlot addTimeSlot(@RequestBody TimeSlot timeSlot) {
+        timeSlot.setIsNew(true);
+        return timeSlotRepository.save(timeSlot);
     }
 
     @ResponseBody
     @PostMapping(path = "/updateTimeSlot")
-    public void updateTimeSlot(@RequestBody TimeSlot timeSlot) {
-        timeSlot.setIsNew(false);
-
-        timeSlotRepository.save(timeSlot);
+    public TimeSlot updateTimeSlot(@RequestBody TimeSlot timeSlot) {
+        return timeSlotRepository.save(timeSlot);
     }
 
     @ResponseBody
     @PostMapping(path = "/deleteTimeSlot")
-    public void deleteTimeSlot(@RequestBody UUID id) {
-        timeSlotRepository.deleteById(id);
+    public void deleteTimeSlot(@RequestBody Collection<UUID> ids) {
+        ids.forEach(timeSlotRepository::deleteById);
     }
 }

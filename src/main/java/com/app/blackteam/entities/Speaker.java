@@ -1,15 +1,25 @@
 package com.app.blackteam.entities;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.Pattern;
 
 @Entity
 public class Speaker extends PersistableEntity {
+    private static final String phoneNumberRegex = "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$|";
+
+    @Column(nullable = false)
     private String speakerName;
 
+    @Column(nullable = false)
+    @Email
     private String email;
 
+    @Pattern(regexp = phoneNumberRegex)
     private String everydayNumber;
 
+    @Pattern(regexp = phoneNumberRegex)
     private String dayOfNumber;
 
     public Speaker() {
