@@ -1,5 +1,5 @@
 import React from 'react'
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import {BootstrapTable, TableHeaderColumn, InsertButton, ExportCSVButton, DeleteButton, InsertModalHeader} from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 
@@ -129,9 +129,50 @@ class Speakers extends React.Component {
         return response;
     }
 
+    // create custom buttons and modal 
+    createCustomInsertButton = () => {
+      return (
+        <InsertButton
+          btnText='Insert Speaker'
+          btnContextual='btn-success'
+          className='add-speaker-btn'
+          />
+      );
+    }
+
+    createCustomExportCSVButton = () =>{
+      return (
+        <ExportCSVButton
+          btnText='Export to CSV'
+          btnContextual='btn-info'
+          className='export-speaker-btn'/>
+      );
+    }
+
+    createCustomDeleteButton = () =>{
+      return (
+        <DeleteButton
+          btnText='Delete Speaker'
+          btnContextual='btn-danger'
+          className='delete-speaker-btn'/>
+      );
+    }
+
+    /* createCustomModalHeader = (closeModal, save) => {
+      return (
+        <InsertModalHeader
+          className='my-custom-class'
+          title='Add Speaker'/>
+      );
+    } */
+
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
-        afterDeleteRow: this.deleteRowHook.bind(this)
+        afterDeleteRow: this.deleteRowHook.bind(this),
+        insertBtn: this.createCustomInsertButton,
+        exportCSVBtn: this.createCustomExportCSVButton,
+        deleteBtn:this.createCustomDeleteButton
+      //insertModalHeader: this.createCustomModalHeader
     };
 
     cellEditProps = {
