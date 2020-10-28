@@ -105,6 +105,30 @@ class Speakers extends React.Component {
         return response;
     }
 
+    emailValidator(value, row) {
+        const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
+        const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+        if (!(String(value).match(re))) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Email entered was not valid';
+            response.notification.title = 'Invalid Entry';
+        }
+        return response;
+    }
+
+    phoneNumberValidator(value, row) {
+        const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
+        const re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+        if (!(String(value).match(re))) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Number entered was not valid';
+            response.notification.title = 'Invalid Entry';
+        }
+        return response;
+    }
+
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         afterDeleteRow: this.deleteRowHook.bind(this)
@@ -138,9 +162,9 @@ class Speakers extends React.Component {
                         <TableHeaderColumn hidden hiddenOninsert autoValue isKey dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='speakerName' editable={{validator: this.cannotBeEmptyValidator}}>Speaker
                             Name</TableHeaderColumn>
-                        <TableHeaderColumn dataField='email'>Email</TableHeaderColumn>
-                        <TableHeaderColumn dataField='everydayNumber'>Everyday Number</TableHeaderColumn>
-                        <TableHeaderColumn dataField='dayOfNumber'>Day Of Number</TableHeaderColumn>
+                        <TableHeaderColumn dataField='email' editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='everydayNumber' editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
+                        <TableHeaderColumn dataField='dayOfNumber'editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>

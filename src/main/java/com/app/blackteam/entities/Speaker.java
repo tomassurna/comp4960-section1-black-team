@@ -7,8 +7,7 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 public class Speaker extends PersistableEntity {
-    private static final String phoneNumberRegex = "^(\\+\\d{1,2}\\s)?\\(?\\d{3}\\)?[\\s.-]\\d{3}[\\s.-]\\d{4}$|";
-
+    
     @Column(nullable = false)
     private String speakerName;
 
@@ -16,10 +15,10 @@ public class Speaker extends PersistableEntity {
     @Email
     private String email;
 
-    @Pattern(regexp = phoneNumberRegex)
+    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
     private String everydayNumber;
 
-    @Pattern(regexp = phoneNumberRegex)
+    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
     private String dayOfNumber;
 
     public Speaker() {
