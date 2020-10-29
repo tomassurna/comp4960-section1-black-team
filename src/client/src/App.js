@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
-import { HashRouter, Route, Switch } from 'react-router-dom';
+import React, {Component} from 'react';
+import {HashRouter, Route, Switch} from 'react-router-dom';
 import './scss/style.scss';
+import '../node_modules/react-s-alert/dist/s-alert-default.css';
+import '../node_modules/react-s-alert/dist/s-alert-css-effects/stackslide.css';
 
 const loading = (
   <div className="pt-3 text-center">
     <div className="sk-spinner sk-spinner-pulse"></div>
   </div>
-)
+);
 
 // Containers (Main pages)
 const TheLayout = React.lazy(() => import('./components/TheLayout'));
