@@ -99,7 +99,7 @@ class Speakers extends React.Component {
         if (!value) {
             response.isValid = false;
             response.notification.type = 'error';
-            response.notification.msg = 'Value must be inserted';
+            response.notification.msg = 'Speaker name must be inserted';
             response.notification.title = 'Requested Value';
         }
         return response;
@@ -158,21 +158,21 @@ class Speakers extends React.Component {
       );
     }
 
-    /* createCustomModalHeader = (closeModal, save) => {
+    createCustomModalHeader = () => {
       return (
         <InsertModalHeader
-          className='my-custom-class'
+          className='speaker-modal-header'
           title='Add Speaker'/>
       );
-    } */
+    } 
 
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         afterDeleteRow: this.deleteRowHook.bind(this),
         insertBtn: this.createCustomInsertButton,
         exportCSVBtn: this.createCustomExportCSVButton,
-        deleteBtn:this.createCustomDeleteButton
-      //insertModalHeader: this.createCustomModalHeader
+        deleteBtn:this.createCustomDeleteButton,
+        insertModalHeader: this.createCustomModalHeader
     };
 
     cellEditProps = {
