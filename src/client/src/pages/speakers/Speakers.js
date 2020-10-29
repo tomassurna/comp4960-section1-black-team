@@ -1,7 +1,15 @@
 import React from 'react'
-import {BootstrapTable, TableHeaderColumn, InsertButton, ExportCSVButton, DeleteButton, InsertModalHeader} from 'react-bootstrap-table';
+import {
+    BootstrapTable,
+    DeleteButton,
+    ExportCSVButton,
+    InsertButton,
+    InsertModalHeader,
+    TableHeaderColumn
+} from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
+import Alert from 'react-s-alert';
 
 class Speakers extends React.Component {
     constructor(props) {
@@ -9,7 +17,7 @@ class Speakers extends React.Component {
         this.getData();
         this.state = {
             data: this.data
-        }
+        };
     }
 
     getData() {
@@ -24,8 +32,12 @@ class Speakers extends React.Component {
                 });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error('Unable to load table data.', {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
+
             this.setState({
                 data: []
             });
@@ -51,8 +63,11 @@ class Speakers extends React.Component {
                 });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error saving row.", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
         });
     }
 
@@ -64,11 +79,18 @@ class Speakers extends React.Component {
             type: "json",
             contentType: "application/json",
             success: (response) => {
-                // TODO: Implement some undo function
+                Alert.success("Row(s) deleted.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error deleting row(s).", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
         });
     }
 
@@ -86,8 +108,11 @@ class Speakers extends React.Component {
                 done(true);
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error saving row.", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
             done(false);
         });
 
@@ -108,7 +133,7 @@ class Speakers extends React.Component {
     emailValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (!(String(value).match(re)) && value != false) {
+        if (!(String(value).match(re)) && !value) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
@@ -120,7 +145,7 @@ class Speakers extends React.Component {
     phoneNumberValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         const re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-        if (!(String(value).match(re)) && value != false) {
+        if (!(String(value).match(re)) && !!value) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Number entered was not valid';
@@ -138,7 +163,7 @@ class Speakers extends React.Component {
           className='add-speaker-btn'
           />
       );
-    }
+    };
 
     createCustomExportCSVButton = () =>{
       return (
@@ -147,7 +172,7 @@ class Speakers extends React.Component {
           btnContextual='btn-info'
           className='export-speaker-btn'/>
       );
-    }
+    };
 
     createCustomDeleteButton = () =>{
       return (
@@ -156,7 +181,7 @@ class Speakers extends React.Component {
           btnContextual='btn-danger'
           className='delete-speaker-btn'/>
       );
-    }
+    };
 
     createCustomModalHeader = () => {
       return (
@@ -164,14 +189,14 @@ class Speakers extends React.Component {
           className='speaker-modal-header'
           title='Add Speaker'/>
       );
-    } 
+    };
 
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         afterDeleteRow: this.deleteRowHook.bind(this),
         insertBtn: this.createCustomInsertButton,
         exportCSVBtn: this.createCustomExportCSVButton,
-        deleteBtn:this.createCustomDeleteButton,
+        deleteBtn: this.createCustomDeleteButton,
         insertModalHeader: this.createCustomModalHeader
     };
 
@@ -190,9 +215,12 @@ class Speakers extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <BootstrapTable striped hover condensed
+                    <BootstrapTable striped
+                                    hover
+                                    condensed
                                     data={this.state.data}
-                        // pagination
+                        //             search
+                        //             pagination
                                     exportCSV
                                     version='4'
                                     insertRow
@@ -200,12 +228,19 @@ class Speakers extends React.Component {
                                     selectRow={{mode: 'checkbox'}}
                                     options={this.tableProps}
                                     cellEdit={this.cellEditProps}>
-                        <TableHeaderColumn hidden hiddenOninsert autoValue isKey dataField='id'>id</TableHeaderColumn>
-                        <TableHeaderColumn dataField='speakerName' editable={{validator: this.cannotBeEmptyValidator}}>Speaker
-                            Name</TableHeaderColumn>
-                        <TableHeaderColumn dataField='email' editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
-                        <TableHeaderColumn dataField='everydayNumber' editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
-                        <TableHeaderColumn dataField='dayOfNumber'editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
+                        <TableHeaderColumn hidden
+                                           hiddenOninsert
+                                           autoValue
+                                           isKey
+                                           dataField='id'>id</TableHeaderColumn>
+                        <TableHeaderColumn dataField='speakerName'
+                                           editable={{validator: this.cannotBeEmptyValidator}}>Speaker Name</TableHeaderColumn>
+                        <TableHeaderColumn dataField='email'
+                                           editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='everydayNumber'
+                                           editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
+                        <TableHeaderColumn dataField='dayOfNumber'
+                                           editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>
