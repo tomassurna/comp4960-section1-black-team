@@ -1,6 +1,38 @@
 // Import CoreUI styles
 @import "~@coreui/coreui/scss/coreui.scss";
 
+// Custom CSS
 .react-bs-table-insert-modal{
-  margin-top: 50%
+  margin-top: 20%
+}
+
+// Speaker - buttons, modal 
+.add-speaker-btn{
+  height: 40px;
+  margin-right: 5px;
+}
+
+.delete-speaker-btn{
+  height: 40px;
+  margin-right: 5px;
+}
+
+.export-speaker-btn{
+  height: 40px;
+  margin-right: 5px; 
+}
+
+.speaker-modal-header{
+  display: inline; 
+}
+
+// error message
+.bg-danger{
+  color: #e55353!important;
+  background-color: #ffffff!important;
+}
+
+// tool bar
+.react-bs-table-tool-bar{
+  height: 60px;
 }
