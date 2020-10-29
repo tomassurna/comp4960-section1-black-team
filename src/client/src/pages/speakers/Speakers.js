@@ -108,7 +108,7 @@ class Speakers extends React.Component {
     emailValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (!(String(value).match(re))) {
+        if (!(String(value).match(re)) && value != false) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
@@ -120,7 +120,7 @@ class Speakers extends React.Component {
     phoneNumberValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         const re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-        if (!(String(value).match(re))) {
+        if (!(String(value).match(re)) && value != false) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Number entered was not valid';
