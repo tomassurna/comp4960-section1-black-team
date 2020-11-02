@@ -11,7 +11,7 @@ public class Speaker extends PersistableEntity {
     @Column(nullable = false)
     private String speakerName;
 
-    @Column(nullable = false)
+    @Column
     @Email
     private String email;
 

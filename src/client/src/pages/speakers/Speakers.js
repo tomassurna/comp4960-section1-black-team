@@ -1,6 +1,7 @@
 import React from 'react'
 import {
     BootstrapTable,
+    ButtonGroup,
     DeleteButton,
     ExportCSVButton,
     InsertButton,
@@ -16,7 +17,9 @@ class Speakers extends React.Component {
         super(props);
         this.getData();
         this.state = {
-            data: this.data
+            data: [],
+            editMode: false,
+            deletedRows: []
         };
     }
 
@@ -44,12 +47,17 @@ class Speakers extends React.Component {
         });
     }
 
-
     addRowHook(row) {
-        const data = this.state.data || [];
-
         // Clear our the id field since the backend will auto generate one for us
         row.id = null;
+        row.isNew = true;
+        this.addRowAjaxCall(row);
+    }
+
+    // We use this call here when we do not want to delete the row id
+    addRowAjaxCall(row) {
+        const data = this.state.data;
+
         $.ajax({
             method: "POST",
             url: "/Speaker/addSpeaker",
@@ -72,6 +80,14 @@ class Speakers extends React.Component {
     }
 
     deleteRowHook(rowIdsToDelete) {
+        const data = this.state.data;
+        const rowsToDelete = data.filter((row) => rowIdsToDelete.includes(row.id));
+
+        const currentDeletedRows = this.state.deletedRows;
+        currentDeletedRows.push(rowsToDelete);
+
+        this.setState({deletedRows: currentDeletedRows});
+
         $.ajax({
             method: "POST",
             url: "/Speaker/deleteSpeaker",
@@ -79,6 +95,8 @@ class Speakers extends React.Component {
             type: "json",
             contentType: "application/json",
             success: (response) => {
+                this.setState({data: data.filter((row) => !rowIdsToDelete.includes(row.id))});
+
                 Alert.success("Row(s) deleted.", {
                     position: 'top-right',
                     effect: 'stackslide',
@@ -119,6 +137,16 @@ class Speakers extends React.Component {
         return 1;
     }
 
+    onConfirmDeleteRow(next, dropRowKeys) {
+        next();
+    }
+
+    onUndo() {
+        // When we undo, add back the deleted rows
+        const deletedRows = this.state.deletedRows.pop();
+        deletedRows.forEach((row) => this.addRowAjaxCall(row));
+    }
+
     cannotBeEmptyValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         if (!value) {
@@ -133,7 +161,7 @@ class Speakers extends React.Component {
     emailValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (!(String(value).match(re)) && !value) {
+        if (!(String(value).match(re)) && !!value) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
@@ -154,7 +182,6 @@ class Speakers extends React.Component {
         return response;
     }
 
-    // create custom buttons and modal 
     createCustomInsertButton = () => {
       return (
         <InsertButton
@@ -191,13 +218,38 @@ class Speakers extends React.Component {
       );
     };
 
+    createCustomButtonGroup = props => {
+        return (
+            <ButtonGroup sizeClass='btn-group-md'>
+                {props.showSelectedOnlyBtn}
+                {props.exportCSVBtn}
+                {props.insertBtn}
+                {props.deleteBtn}
+                <button type='button'
+                        className={`btn btn-primary edit-mode-btn`}
+                        onClick={() => this.setState({editMode: !this.state.editMode})}>
+                    {this.state.editMode ? "Exit Edit Mode" : "Edit Mode"}
+                </button>
+                {this.state.deletedRows.length > 0 ?
+                    <button type='button'
+                            className={`btn btn-primary undo-btn`}
+                            onClick={this.onUndo.bind(this)}>
+                        Undo Delete
+                    </button> : null}
+            </ButtonGroup>
+        );
+    };
+
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
-        afterDeleteRow: this.deleteRowHook.bind(this),
+        onDeleteRow: this.deleteRowHook.bind(this),
         insertBtn: this.createCustomInsertButton,
         exportCSVBtn: this.createCustomExportCSVButton,
         deleteBtn: this.createCustomDeleteButton,
-        insertModalHeader: this.createCustomModalHeader
+        insertModalHeader: this.createCustomModalHeader,
+        btnGroup: this.createCustomButtonGroup,
+        clearSearch: true,
+        handleConfirmDeleteRow: this.onConfirmDeleteRow.bind(this)
     };
 
     cellEditProps = {
@@ -219,15 +271,13 @@ class Speakers extends React.Component {
                                     hover
                                     condensed
                                     data={this.state.data}
-                        //             search
-                        //             pagination
-                                    exportCSV
+                                    search
                                     version='4'
                                     insertRow
                                     deleteRow
                                     selectRow={{mode: 'checkbox'}}
                                     options={this.tableProps}
-                                    cellEdit={this.cellEditProps}>
+                                    cellEdit={this.state.editMode ? this.cellEditProps : {}}>
                         <TableHeaderColumn hidden
                                            hiddenOninsert
                                            autoValue
