@@ -191,6 +191,22 @@ class Speakers extends React.Component {
         return response;
     }
 
+    phoneNumberFormatter(value) {
+        // Returns empty if there is no number
+        if (!value) {
+            return value;
+        }
+        // Removes all non-number characters from the number string
+        let formattedValue = "";
+        for (let i = 0; i < value.length; i++) {
+            if(value[i] >= '0' && value[i] <= '9') {
+                formattedValue += value[i];
+            }
+        }
+        // Creates a new formatted version of edited phone number
+        return ('(' + formattedValue.slice(0, 3) + ') ' + formattedValue.slice(3, 6) + '-' + formattedValue.slice(6, 10));
+    } 
+
     createCustomInsertButton = () => {
       return (
         <InsertButton
@@ -294,8 +310,10 @@ class Speakers extends React.Component {
                         <TableHeaderColumn dataField='email'
                                            editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
+                                           dataFormat={ this.phoneNumberFormatter }
                                            editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
                         <TableHeaderColumn dataField='dayOfNumber'
+                                           dataFormat={ this.phoneNumberFormatter }
                                            editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
