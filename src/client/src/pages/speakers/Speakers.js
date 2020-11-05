@@ -343,8 +343,7 @@ class Speakers extends React.Component {
                             editable={{ validator: this.cannotBeEmptyValidator }}
                             columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
-                            editable={{ validator: this.emailValidator }}>Email</TableHeaderColumn>
-                                           editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
+                            editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
                             dataFormat={this.phoneNumberFormatter}
                             editable={{ validator: this.phoneNumberValidator }}>Everyday Number</TableHeaderColumn>
