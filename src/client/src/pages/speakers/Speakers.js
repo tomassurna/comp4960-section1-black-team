@@ -5,8 +5,8 @@ import {
     DeleteButton,
     InsertButton,
     InsertModalHeader,
-    TableHeaderColumn,
-    SearchField
+    SearchField,
+    TableHeaderColumn
 } from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
@@ -156,6 +156,17 @@ class Speakers extends React.Component {
         deletedRows.forEach((row) => this.addRowAjaxCall(row));
     }
 
+    getClassNameForDuplicateSpeakers(cell, row, rowIndex, columnIndex) {
+        if (!!row["speakerName"]) {
+          return this.state.data.filter(
+              (tableRow) =>
+                  tableRow["speakerName"] === row["speakerName"] && !row["email"] && !tableRow["email"]
+          ).length >= 2
+              ? "duplicate-speaker-name"
+              : "";
+        }
+    }
+
     cannotBeEmptyValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         if (!value) {
@@ -175,6 +186,12 @@ class Speakers extends React.Component {
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
             response.notification.title = 'Invalid Entry';
+        } else if (!!value && this.state.data.filter(
+            (tableRow) => tableRow["email"] === value).length >= 1) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Email entered was not unique';
+            response.notification.title = 'Invalid Entry'
         }
         return response;
     }
@@ -260,7 +277,7 @@ class Speakers extends React.Component {
               className='speaker-search-field'
               style={ { height: 40 } }/>
         );
-      }
+      };
 
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
@@ -289,8 +306,7 @@ class Speakers extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <BootstrapTable striped
-                                    hover
+                    <BootstrapTable hover
                                     condensed
                                     data={this.state.data}
                                     search
@@ -306,9 +322,10 @@ class Speakers extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='speakerName'
-                                           editable={{validator: this.cannotBeEmptyValidator}}>Speaker Name</TableHeaderColumn>
+                                           editable={{validator: this.cannotBeEmptyValidator}}
+                                           columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
-                                           editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
+                                           editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
                                            dataFormat={ this.phoneNumberFormatter }
                                            editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
