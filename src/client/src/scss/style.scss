@@ -27,9 +27,10 @@
   margin-right: 5px;
 }
 
-.undo-btn{
+.undo-btn, .undo-btn:hover, .undo-btn:active, .undo-btn:focus, .undo-btn:visited{
   height: 40px;
   margin-right: 5px;
+  color:white !important;
 }
 
 .react-bs-table-search-clear-btn{
