@@ -187,6 +187,12 @@ class Speakers extends React.Component {
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
             response.notification.title = 'Invalid Entry';
+        } else if (!!value && this.state.data.filter(
+            (tableRow) => tableRow["email"] === value).length >= 1) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Email entered was not unique';
+            response.notification.title = 'Invalid Entry'
         }
         return response;
     }
@@ -338,6 +344,7 @@ class Speakers extends React.Component {
                             columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
                             editable={{ validator: this.emailValidator }}>Email</TableHeaderColumn>
+                                           editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
                             dataFormat={this.phoneNumberFormatter}
                             editable={{ validator: this.phoneNumberValidator }}>Everyday Number</TableHeaderColumn>
