@@ -1,12 +1,12 @@
 import React from 'react'
 import {
-    BootstrapTable,
-    ButtonGroup,
-    DeleteButton,
-    InsertButton,
-    InsertModalHeader,
-    TableHeaderColumn,
-    SearchField
+  BootstrapTable,
+  ButtonGroup,
+  DeleteButton,
+  InsertButton,
+  InsertModalHeader,
+  SearchField,
+  TableHeaderColumn
 } from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
@@ -158,8 +158,12 @@ class Speakers extends React.Component {
 
     getClassNameForDuplicateSpeakers(cell, row, rowIndex, columnIndex) {
         if (!!row["speakerName"]) {
-            return this.state.data.filter(tableRow => tableRow["speakerName"] === row["speakerName"]).length >= 2
-                ? "duplicate-speaker-name" : "";
+          return this.state.data.filter(
+              (tableRow) =>
+                  tableRow["speakerName"] === row["speakerName"] && !row["email"] && !tableRow["email"]
+          ).length >= 2
+              ? "duplicate-speaker-name"
+              : "";
         }
     }
 
@@ -267,7 +271,7 @@ class Speakers extends React.Component {
               className='speaker-search-field'
               style={ { height: 40 } }/>
         );
-      }
+      };
 
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
