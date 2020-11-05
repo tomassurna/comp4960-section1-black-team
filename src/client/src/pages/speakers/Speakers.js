@@ -3,10 +3,10 @@ import {
     BootstrapTable,
     ButtonGroup,
     DeleteButton,
-    ExportCSVButton,
     InsertButton,
     InsertModalHeader,
-    TableHeaderColumn
+    TableHeaderColumn,
+    SearchField
 } from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
@@ -69,6 +69,11 @@ class Speakers extends React.Component {
                 this.setState({
                     data: data
                 });
+                Alert.success("Speaker added.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
             Alert.error("Error saving row.", {
@@ -122,8 +127,12 @@ class Speakers extends React.Component {
             type: "json",
             contentType: "application/json",
             success: (response) => {
-                // TODO: Implement some undo function
                 done(true);
+                Alert.success("Row updated.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
             Alert.error("Error saving row.", {
@@ -182,22 +191,28 @@ class Speakers extends React.Component {
         return response;
     }
 
+    phoneNumberFormatter(value) {
+        // Returns empty if there is no number
+        if (!value) {
+            return value;
+        }
+        // Removes all non-number characters from the number string
+        let formattedValue = "";
+        for (let i = 0; i < value.length; i++) {
+            if(value[i] >= '0' && value[i] <= '9') {
+                formattedValue += value[i];
+            }
+        }
+        // Creates a new formatted version of edited phone number
+        return ('(' + formattedValue.slice(0, 3) + ') ' + formattedValue.slice(3, 6) + '-' + formattedValue.slice(6, 10));
+    } 
+
     createCustomInsertButton = () => {
       return (
         <InsertButton
           btnText='Insert Speaker'
           btnContextual='btn-success'
-          className='add-speaker-btn'
-          />
-      );
-    };
-
-    createCustomExportCSVButton = () =>{
-      return (
-        <ExportCSVButton
-          btnText='Export to CSV'
-          btnContextual='btn-info'
-          className='export-speaker-btn'/>
+          className='add-speaker-btn'/>
       );
     };
 
@@ -222,17 +237,16 @@ class Speakers extends React.Component {
         return (
             <ButtonGroup sizeClass='btn-group-md'>
                 {props.showSelectedOnlyBtn}
-                {props.exportCSVBtn}
                 {props.insertBtn}
                 {props.deleteBtn}
                 <button type='button'
-                        className={`btn btn-primary edit-mode-btn`}
+                        className={`btn btn-info edit-mode-btn`}
                         onClick={() => this.setState({editMode: !this.state.editMode})}>
                     {this.state.editMode ? "Exit Edit Mode" : "Edit Mode"}
                 </button>
                 {this.state.deletedRows.length > 0 ?
                     <button type='button'
-                            className={`btn btn-primary undo-btn`}
+                            className={`btn btn-warning undo-btn`}
                             onClick={this.onUndo.bind(this)}>
                         Undo Delete
                     </button> : null}
@@ -240,14 +254,22 @@ class Speakers extends React.Component {
         );
     };
 
+    createCustomSearchField = () => {
+        return (
+          <SearchField
+              className='speaker-search-field'
+              style={ { height: 40 } }/>
+        );
+      }
+
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         onDeleteRow: this.deleteRowHook.bind(this),
         insertBtn: this.createCustomInsertButton,
-        exportCSVBtn: this.createCustomExportCSVButton,
         deleteBtn: this.createCustomDeleteButton,
         insertModalHeader: this.createCustomModalHeader,
         btnGroup: this.createCustomButtonGroup,
+        searchField: this.createCustomSearchField,
         clearSearch: true,
         handleConfirmDeleteRow: this.onConfirmDeleteRow.bind(this)
     };
@@ -288,8 +310,10 @@ class Speakers extends React.Component {
                         <TableHeaderColumn dataField='email'
                                            editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
+                                           dataFormat={ this.phoneNumberFormatter }
                                            editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
                         <TableHeaderColumn dataField='dayOfNumber'
+                                           dataFormat={ this.phoneNumberFormatter }
                                            editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
