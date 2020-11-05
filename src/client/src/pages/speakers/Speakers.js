@@ -156,6 +156,13 @@ class Speakers extends React.Component {
         deletedRows.forEach((row) => this.addRowAjaxCall(row));
     }
 
+    getClassNameForDuplicateSpeakers(cell, row, rowIndex, columnIndex) {
+        if (!!row["speakerName"]) {
+            return this.state.data.filter(tableRow => tableRow["speakerName"] === row["speakerName"]).length >= 2
+                ? "duplicate-speaker-name" : "";
+        }
+    }
+
     cannotBeEmptyValidator(value, row) {
         const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
         if (!value) {
@@ -289,8 +296,7 @@ class Speakers extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <BootstrapTable striped
-                                    hover
+                    <BootstrapTable hover
                                     condensed
                                     data={this.state.data}
                                     search
@@ -306,7 +312,8 @@ class Speakers extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='speakerName'
-                                           editable={{validator: this.cannotBeEmptyValidator}}>Speaker Name</TableHeaderColumn>
+                                           editable={{validator: this.cannotBeEmptyValidator}}
+                                           columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
                                            editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
