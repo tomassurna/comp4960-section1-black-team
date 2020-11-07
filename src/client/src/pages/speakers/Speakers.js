@@ -188,7 +188,7 @@ class Speakers extends React.Component {
             response.notification.msg = 'Email entered was not valid';
             response.notification.title = 'Invalid Entry';
         } else if (!!value && this.state.data.filter(
-            (tableRow) => tableRow["email"] === value).length >= 1) {
+            (tableRow) => (tableRow["email"] === value) && tableRow["id"] !== row["id"]).length >= 1) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not unique';
@@ -253,7 +253,7 @@ class Speakers extends React.Component {
 
     handleModalClose(closeModal) {
         closeModal();
-      }
+    };
 
     createCustomModalFooter = (closeModal) => {
         return (
@@ -264,8 +264,8 @@ class Speakers extends React.Component {
             closeBtnClass='speaker-modal-close-btn'
             saveBtnClass='speaker-modal-save-btn'
             onModalClose={ () => this.handleModalClose(closeModal) }/>
-        );    
-    }
+        );
+    };
 
     createCustomButtonGroup = props => {
         return (
@@ -341,15 +341,19 @@ class Speakers extends React.Component {
                             dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='speakerName'
                             editable={{ validator: this.cannotBeEmptyValidator }}
-                            columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
+                            columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}
+                            dataSort={ true }>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
-                            editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
+                            editable={{validator: this.emailValidator.bind(this)}}
+                            dataSort={ true }>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
                             dataFormat={this.phoneNumberFormatter}
-                            editable={{ validator: this.phoneNumberValidator }}>Everyday Number</TableHeaderColumn>
+                            editable={{ validator: this.phoneNumberValidator }}
+                            dataSort={ true }>Everyday Number</TableHeaderColumn>
                         <TableHeaderColumn dataField='dayOfNumber'
                             dataFormat={this.phoneNumberFormatter}
-                            editable={{ validator: this.phoneNumberValidator }}>Day Of Number</TableHeaderColumn>
+                            editable={{ validator: this.phoneNumberValidator }}
+                            dataSort={ true }>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>
