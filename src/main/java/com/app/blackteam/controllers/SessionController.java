@@ -36,18 +36,10 @@ public class SessionController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/addSession")
-    public Session addSession(@RequestBody Session session) {
-        session.setIsNew(true);
+    @PostMapping(path = "/saveSession")
+    public Session saveSession(@RequestBody Session session) {
         return sessionRepository.save(session);
     }
-
-    @ResponseBody
-    @PostMapping(path = "/updateSession")
-    public Session updateSession(@RequestBody Session session) {
-        return sessionRepository.save(session);
-    }
-
     @ResponseBody
     @PostMapping(path = "/deleteSession")
     public void deleteSession(@RequestBody Collection<UUID> ids) {

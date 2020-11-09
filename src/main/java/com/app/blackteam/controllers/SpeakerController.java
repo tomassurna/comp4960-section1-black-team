@@ -36,14 +36,8 @@ public class SpeakerController {
     }
 
     @ResponseBody
-    @RequestMapping(path = "/addSpeaker", method = RequestMethod.POST)
-    public Speaker addSpeaker(@RequestBody Speaker speaker) {
-        return speakerRepository.save(speaker);
-    }
-
-    @ResponseBody
-    @PostMapping(path = "/updateSpeaker")
-    public Speaker updateSpeaker(@RequestBody Speaker speaker) {
+    @RequestMapping(path = "/saveSpeaker", method = RequestMethod.POST)
+    public Speaker saveSpeaker(@RequestBody Speaker speaker) {
         return speakerRepository.save(speaker);
     }
 
