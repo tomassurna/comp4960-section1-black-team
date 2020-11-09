@@ -121,6 +121,11 @@ class TimeSlots extends React.Component {
     beforeSaveHook(row, cellName, cellValue, done) {
         let mockRow = { ...row };
         mockRow[cellName] = cellValue;
+
+        if (row[cellName] === mockRow[cellName]) {
+            return true;
+        }
+
         $.ajax({
             method: "POST",
             url: "/TimeSlot/saveTimeSlot",
