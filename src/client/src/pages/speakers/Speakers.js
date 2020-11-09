@@ -233,7 +233,7 @@ class Speakers extends React.Component {
     createCustomInsertButton = () => {
         return (
             <InsertButton
-                btnText='Insert Session'
+                btnText='Insert Speaker'
                 btnContextual='btn-success'
                 className='add-btn' />
         );
@@ -242,7 +242,7 @@ class Speakers extends React.Component {
     createCustomDeleteButton = () => {
         return (
             <DeleteButton
-                btnText='Delete Session'
+                btnText='Delete Speaker'
                 btnContextual='btn-danger'
                 className='delete-btn' />
         );
@@ -252,7 +252,7 @@ class Speakers extends React.Component {
         return (
             <InsertModalHeader
                 className='modal-header'
-                title='Add Session' />
+                title='Add Speaker' />
         );
     };
 
