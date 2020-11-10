@@ -12,7 +12,6 @@ import {
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 import Alert from 'react-s-alert';
-import { uniqueNamesGenerator, names, colors, animals } from 'unique-names-generator';
 
 class Rooms extends React.Component {
     constructor(props) {
@@ -174,6 +173,54 @@ class Rooms extends React.Component {
         return response;
     }
 
+    roomNameValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        // check for empty input
+        if (!value) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Value must be inserted';
+            response.notification.title = 'Requested Value';
+        }
+        // check for duplicate entry (case insensitive)
+        else if (!!value && this.state.data.filter(
+            (tableRow) => (tableRow["name"].toUpperCase() === value.toUpperCase()) && tableRow["id"] !== row["id"]).length >= 1) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Room entered exists';
+            response.notification.title = 'Invalid Entry'
+        }
+        return response;
+    }
+
+    capacityValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        const MAX_CAPACITY = 200;
+        const MIN_CAPACITY = 1;
+        // check for empty input
+        if (!value) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Value must be inserted';
+            response.notification.title = 'Requested Value';
+        }
+        // check for valid capacity
+        else if (value < MIN_CAPACITY || value > MAX_CAPACITY) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Invalid room capacity (1-200)';
+            response.notification.title = 'Requested Value';
+        }
+        // check if input is an integer
+        else if (isNaN(value)){
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Value must be an integer';
+            response.notification.title = 'Requested Value';
+        }
+        return response;
+    }
+
     createCustomInsertButton = () => {
         return (
             <InsertButton
@@ -233,23 +280,9 @@ class Rooms extends React.Component {
                             onClick={this.onUndo.bind(this)}>
                         Undo Delete
                     </button> : null}
-                <button type='button'
-                        className={`btn btn-info edit-mode-btn`}
-                        onClick={this.generateData.bind(this)}>
-                    Generate Test Data
-                </button>
             </ButtonGroup>
         );
     };
-
-    generateData(){
-        for(let i = 0; i < 10; i++){
-            this.addRowHook({
-                name: uniqueNamesGenerator({ dictionaries: [names, colors, animals], length: 1 }),
-                capacity: Math.floor(Math.random() * Math.floor(100))
-            })
-        }
-    }
 
     createCustomSearchField = () => {
         return (
@@ -303,10 +336,10 @@ class Rooms extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='name'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
+                                           editable={{ validator: this.roomNameValidator.bind(this)}}
                                            dataSort={ true }>Room Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='capacity'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
+                                           editable={{ validator: this.capacityValidator.bind(this) }}
                                            dataSort={ true }>Capacity</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
