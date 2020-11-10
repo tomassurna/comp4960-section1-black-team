@@ -12,6 +12,7 @@ import {
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 import Alert from 'react-s-alert';
+import { uniqueNamesGenerator, names, colors, animals } from 'unique-names-generator';
 
 class Rooms extends React.Component {
     constructor(props) {
@@ -232,9 +233,23 @@ class Rooms extends React.Component {
                             onClick={this.onUndo.bind(this)}>
                         Undo Delete
                     </button> : null}
+                <button type='button'
+                        className={`btn btn-info edit-mode-btn`}
+                        onClick={this.generateData.bind(this)}>
+                    Generate Test Data
+                </button>
             </ButtonGroup>
         );
     };
+
+    generateData(){
+        for(let i = 0; i < 10; i++){
+            this.addRowHook({
+                name: uniqueNamesGenerator({ dictionaries: [names, colors, animals], length: 1 }),
+                capacity: Math.floor(Math.random() * Math.floor(100))
+            })
+        }
+    }
 
     createCustomSearchField = () => {
         return (

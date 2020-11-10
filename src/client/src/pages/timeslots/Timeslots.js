@@ -12,6 +12,7 @@ import {
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 import Alert from 'react-s-alert';
+import {animals, colors, names, uniqueNamesGenerator} from "unique-names-generator";
 
 class TimeSlots extends React.Component {
     constructor(props) {
@@ -232,9 +233,23 @@ class TimeSlots extends React.Component {
                             onClick={this.onUndo.bind(this)}>
                         Undo Delete
                     </button> : null}
+                <button type='button'
+                        className={`btn btn-info edit-mode-btn`}
+                        onClick={this.generateData.bind(this)}>
+                    Generate Test Data
+                </button>
             </ButtonGroup>
         );
     };
+
+    generateData(){
+        for(let i = 6; i < 19; i++){
+            this.addRowHook({
+                startTime: i + ":00:00",
+                endTime: i+1 + ":00:00"
+            })
+        }
+    }
 
     createCustomSearchField = () => {
         return (
