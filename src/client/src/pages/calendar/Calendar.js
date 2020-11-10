@@ -3,6 +3,7 @@ import FullCalendar from "@fullcalendar/react";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
 import $ from "jquery";
 import Alert from "react-s-alert";
+import randomColor from "randomcolor";
 
 class CalendarPage extends React.Component {
     constructor(props) {
@@ -131,11 +132,11 @@ class CalendarPage extends React.Component {
                         start: '2020-09-07',
                         end: '2020-09-07'
                     }}
-                     headerToolbar={{
-                         left: '',
-                         center: '',
-                         right: ''
-                     }}
+                    headerToolbar={{
+                        left: '',
+                        center: '',
+                        right: ''
+                    }}
                     events={this.state.sessions
                         .filter((session) => session["room"])
                         .filter((session) => session["timeSlot"])
@@ -146,6 +147,9 @@ class CalendarPage extends React.Component {
                                 title: session["sessionTitle"],
                                 start: "2020-09-07T" + session["timeSlot"]["startTime"],
                                 end: "2020-09-07T" + session["timeSlot"]["endTime"],
+                                color: randomColor({luminosity: 'light', hue:"blue"}),
+                                textColor: "black",
+                                borderColor: "transparent"
                             };
                         })}
 

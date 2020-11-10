@@ -1,9 +1,9 @@
 package com.app.blackteam.entities;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
+import javax.persistence.*;
 
 @Entity
 public class Session extends PersistableEntity {
@@ -11,12 +11,15 @@ public class Session extends PersistableEntity {
     private String sessionTitle;
 
     @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private TimeSlot timeSlot;
 
     @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private Speaker speaker;
 
     @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private Room room;
 
     public Session() {

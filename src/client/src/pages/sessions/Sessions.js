@@ -13,6 +13,7 @@ import "../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-a
 import $ from "jquery";
 import Alert from "react-s-alert";
 import DropDownEditor from "./DropDownEditor";
+import {animals, colors, names, uniqueNamesGenerator} from "unique-names-generator";
 
 class Sessions extends React.Component {
     constructor(props) {
@@ -331,9 +332,25 @@ class Sessions extends React.Component {
                         Undo Delete
                     </button>
                 ) : null}
+                <button type='button'
+                        className={`btn btn-info edit-mode-btn`}
+                        onClick={this.generateData.bind(this)}>
+                    Generate Test Data
+                </button>
             </ButtonGroup>
         );
     };
+
+    generateData(){
+        for(let i = 0; i < 10; i++){
+            this.addRowHook({
+                sessionTitle: uniqueNamesGenerator({ dictionaries: [names, colors, animals], length: 1 }),
+                room: this.state.rooms[Math.floor(Math.random() * Math.floor(this.state.rooms.length))]["id"],
+                speaker: this.state.speakers[Math.floor(Math.random() * Math.floor(this.state.speakers.length))]["id"],
+                timeSlot: this.state.timeSlots[Math.floor(Math.random() * Math.floor(this.state.timeSlots.length))]["id"]
+            })
+        }
+    }
 
     createCustomSearchField = () => {
         return (
