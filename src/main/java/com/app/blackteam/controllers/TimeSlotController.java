@@ -36,15 +36,8 @@ public class TimeSlotController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/addTimeSlot")
-    public TimeSlot addTimeSlot(@RequestBody TimeSlot timeSlot) {
-        timeSlot.setIsNew(true);
-        return timeSlotRepository.save(timeSlot);
-    }
-
-    @ResponseBody
-    @PostMapping(path = "/updateTimeSlot")
-    public TimeSlot updateTimeSlot(@RequestBody TimeSlot timeSlot) {
+    @PostMapping(path = "/saveTimeSlot")
+    public TimeSlot saveTimeSlot(@RequestBody TimeSlot timeSlot) {
         return timeSlotRepository.save(timeSlot);
     }
 

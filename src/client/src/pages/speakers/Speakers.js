@@ -25,7 +25,7 @@ class Speakers extends React.Component {
     }
 
     getData() {
-        return $.ajax({
+        $.ajax({
             method: "GET",
             url: "/Speaker/all",
             type: "json",
@@ -61,7 +61,7 @@ class Speakers extends React.Component {
 
         $.ajax({
             method: "POST",
-            url: "/Speaker/addSpeaker",
+            url: "/Speaker/saveSpeaker",
             data: JSON.stringify(row),
             type: "json",
             contentType: "application/json",
@@ -121,9 +121,14 @@ class Speakers extends React.Component {
     beforeSaveHook(row, cellName, cellValue, done) {
         let mockRow = { ...row };
         mockRow[cellName] = cellValue;
+
+        if (row[cellName] === mockRow[cellName]) {
+            return true;
+        }
+
         $.ajax({
             method: "POST",
-            url: "/Speaker/updateSpeaker",
+            url: "/Speaker/saveSpeaker",
             data: JSON.stringify(mockRow),
             type: "json",
             contentType: "application/json",
@@ -163,7 +168,7 @@ class Speakers extends React.Component {
                 (tableRow) =>
                     tableRow["speakerName"] === row["speakerName"] && !row["email"] && !tableRow["email"]
             ).length >= 2
-                ? "duplicate-speaker-name"
+                ? "duplicate-value"
                 : "";
         }
     }
@@ -173,7 +178,7 @@ class Speakers extends React.Component {
         if (!value) {
             response.isValid = false;
             response.notification.type = 'error';
-            response.notification.msg = 'Speaker name must be inserted';
+            response.notification.msg = 'Value name must be inserted';
             response.notification.title = 'Requested Value';
         }
         return response;
@@ -230,7 +235,7 @@ class Speakers extends React.Component {
             <InsertButton
                 btnText='Insert Speaker'
                 btnContextual='btn-success'
-                className='add-speaker-btn' />
+                className='add-btn' />
         );
     };
 
@@ -239,14 +244,14 @@ class Speakers extends React.Component {
             <DeleteButton
                 btnText='Delete Speaker'
                 btnContextual='btn-danger'
-                className='delete-speaker-btn' />
+                className='delete-btn' />
         );
     };
 
     createCustomModalHeader = () => {
         return (
             <InsertModalHeader
-                className='speaker-modal-header'
+                className='modal-header'
                 title='Add Speaker' />
         );
     };
@@ -258,12 +263,12 @@ class Speakers extends React.Component {
     createCustomModalFooter = (closeModal) => {
         return (
             <InsertModalFooter
-            className='speaker-modal-footer'
-            closeBtnContextual='btn-light'
-            saveBtnContextual='btn-success'
-            closeBtnClass='speaker-modal-close-btn'
-            saveBtnClass='speaker-modal-save-btn'
-            onModalClose={ () => this.handleModalClose(closeModal) }/>
+                className='modal-footer'
+                closeBtnContextual='btn-light'
+                saveBtnContextual='btn-success'
+                closeBtnClass='modal-close-btn'
+                saveBtnClass='modal-save-btn'
+                onModalClose={ () => this.handleModalClose(closeModal) }/>
         );
     };
 
