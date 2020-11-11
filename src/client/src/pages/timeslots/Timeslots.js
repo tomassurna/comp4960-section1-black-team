@@ -12,7 +12,7 @@ import {
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 import Alert from 'react-s-alert';
-import {animals, colors, names, uniqueNamesGenerator} from "unique-names-generator";
+import TimeEditor from "../calendar/TimeEditor";
 
 class TimeSlots extends React.Component {
     constructor(props) {

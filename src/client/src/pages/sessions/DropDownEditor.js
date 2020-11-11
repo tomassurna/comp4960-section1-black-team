@@ -3,7 +3,7 @@ import React from "react";
 class DropDownEditor extends React.Component {
     constructor(props) {
         super(props);
-        this.updateSelectedTimeSlot = this.updateSelectedTimeSlot.bind(this);
+        this.updateSelected = this.updateSelected.bind(this);
         this.triggerSave = this.triggerSave.bind(this);
         this.state = {
             selectedValue: props.defaultValue,
@@ -12,7 +12,7 @@ class DropDownEditor extends React.Component {
         };
     }
 
-    updateSelectedTimeSlot(event) {
+    updateSelected(event) {
         this.setState({
             selectedValue: this.state.data.find(
                 (row) => row["id"] === event.target.value
@@ -41,7 +41,7 @@ class DropDownEditor extends React.Component {
             <select
                 className={"form-control editor edit-text"}
                 value={this.state.selectedValue ? this.state.selectedValue["id"] : ""}
-                onChange={this.updateSelectedTimeSlot}
+                onChange={this.updateSelected}
                 onBlur={this.triggerSave}
                 onKeyDown={this.triggerSave}
                 ref={(input) => {

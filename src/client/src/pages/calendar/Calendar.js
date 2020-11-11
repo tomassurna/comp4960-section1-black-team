@@ -1,9 +1,11 @@
 import React from "react";
 import FullCalendar from "@fullcalendar/react";
 import resourceTimeGridPlugin from "@fullcalendar/resource-timegrid";
+import scrollGridPlugin from "@fullcalendar/scrollgrid";
 import $ from "jquery";
 import Alert from "react-s-alert";
 import randomColor from "randomcolor";
+import TimeEditor from "./TimeEditor";
 
 class CalendarPage extends React.Component {
     constructor(props) {
@@ -16,6 +18,7 @@ class CalendarPage extends React.Component {
             rooms: [],
             speakers: [],
             timeSlots: [],
+            lunchTime: "12:00:00",
         };
     }
 
@@ -106,60 +109,85 @@ class CalendarPage extends React.Component {
         });
     }
 
+    lunchTimeUpdate(value) {
+        if (this.state.lunchTime !== value) {
+            this.setState({lunchTime: value});
+        }
+    }
+
     render() {
         return (
             <>
                 <div className="card">
                     <div className="card-header">
-                        <h3>Calendar</h3>
+                        <h3 style={{display: "inline"}}>Calendar</h3>
+                        <label className={"lunch-time-input-area"}>
+                            Lunch Time:
+                            <TimeEditor
+                                defaultValue={this.state.lunchTime}
+                                onUpdate={this.lunchTimeUpdate.bind(this)}
+                            />
+                        </label>
                     </div>
                 </div>
 
                 <FullCalendar
-                    plugins={[resourceTimeGridPlugin]}
-                    initialView={"resourceTimeGridOneDay"}
-                    schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
                     allDaySlot={false}
-                    initialDate={"2020-09-07"}
-                    resources={this.state.rooms.map((room) => {
-                        return {id: room["id"], title: room["name"]};
-                    })}
-                    height={"auto"}
-                    slotMinTime={'06:00:00'}
-                    slotMaxTime={'21:15:00'}
-                    slotDuration={'00:15:00'}
-                    validRange={{
-                        start: '2020-09-07',
-                        end: '2020-09-07'
-                    }}
-                    headerToolbar={{
-                        left: '',
-                        center: '',
-                        right: ''
-                    }}
+                    dayMinWidth={200}
                     events={this.state.sessions
                         .filter((session) => session["room"])
                         .filter((session) => session["timeSlot"])
                         .map((session) => {
                             return {
+                                borderColor: "transparent",
+                                color: randomColor({luminosity: "light", hue: "blue"}),
+                                description:
+                                    session["sessionTitle"] +
+                                    "\n" +
+                                    session["speaker"]["speakerName"],
+                                end: "2020-09-07T" + session["timeSlot"]["endTime"],
                                 id: session["id"],
                                 resourceId: session["room"]["id"],
-                                title: session["sessionTitle"],
                                 start: "2020-09-07T" + session["timeSlot"]["startTime"],
-                                end: "2020-09-07T" + session["timeSlot"]["endTime"],
-                                color: randomColor({luminosity: 'light', hue:"blue"}),
                                 textColor: "black",
-                                borderColor: "transparent"
+                                title:
+                                    session["sessionTitle"] +
+                                    "\n" +
+                                    session["speaker"]["speakerName"],
                             };
-                        })}
-
+                        })
+                        .concat([
+                            {
+                                borderColor: "transparent",
+                                color: randomColor({luminosity: "light", hue: "blue"}),
+                                end: "2020-09-07T" + this.state.lunchTime,
+                                resourceIds: this.state.rooms.map((room) => room["id"]),
+                                start: "2020-09-07T" + this.state.lunchTime,
+                                textColor: "black",
+                                title: "Lunch",
+                            },
+                        ])}
                     views={{
                         resourceTimeGridOneDay: {
-                            type: 'resourceTimeGrid',
+                            buttonText: "2 days",
                             duration: {days: 1},
-                            buttonText: '2 days',
-                        }
+                            type: "resourceTimeGrid",
+                        },
                     }}
+                    headerToolbar={{left: "", center: "", right: ""}}
+                    height={"auto"}
+                    initialDate={"2020-09-07"}
+                    initialView={"resourceTimeGridOneDay"}
+                    plugins={[resourceTimeGridPlugin, scrollGridPlugin]}
+                    resourceOrder={"title"}
+                    resources={this.state.rooms.map((room) => {
+                        return {id: room["id"], title: room["name"]};
+                    })}
+                    schedulerLicenseKey={"CC-Attribution-NonCommercial-NoDerivatives"}
+                    slotDuration={"00:15:00"}
+                    slotMaxTime={"21:15:00"}
+                    slotMinTime={"06:00:00"}
+                    validRange={{start: "2020-09-07", end: "2020-09-07"}}
                 />
             </>
         );
