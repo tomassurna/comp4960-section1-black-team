@@ -197,7 +197,7 @@ class Rooms extends React.Component {
         const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         const MAX_CAPACITY = 200;
         const MIN_CAPACITY = 1;
-        // check for empty input
+        // checks for empty input
         if (!value) {
             response.isValid = false;
             response.notification.type = 'error';
