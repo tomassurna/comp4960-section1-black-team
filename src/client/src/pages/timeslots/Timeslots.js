@@ -4,8 +4,8 @@ import {
     ButtonGroup,
     DeleteButton,
     InsertButton,
-    InsertModalHeader,
     InsertModalFooter,
+    InsertModalHeader,
     SearchField,
     TableHeaderColumn
 } from 'react-bootstrap-table';
@@ -13,6 +13,7 @@ import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-a
 import $ from 'jquery';
 import Alert from 'react-s-alert';
 import TimeEditor from "../calendar/TimeEditor";
+import TimeInputField from "./TimeInputField";
 
 class TimeSlots extends React.Component {
     constructor(props) {
@@ -174,7 +175,7 @@ class TimeSlots extends React.Component {
         return response;
     }
 
-    timeValidator(value, row) {
+    startTimeValidator(value, row) {
         const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         const startTime = value.replace(":", ".").split(':')[0];
         const endTime = row["endTime"].replace(":", ".").split(':')[0];
@@ -330,8 +331,14 @@ class TimeSlots extends React.Component {
         beforeSaveCell: this.beforeSaveHook.bind(this)
     };
 
+    createTimeInputField = (column, attr, editorClass, ignoreEditable, defaultValue) => {
+        return (
+            <TimeInputField ref={attr.ref} editorClass={ editorClass } defaultValue={defaultValue}/>
+        );
+    };
+
     createTimeEditor = (onUpdate, props) => (
-        <TimeEditor onUpdate = { onUpdate } { ... props } />
+        <TimeEditor onUpdate = { onUpdate } { ...props } />
     );
 
     render() {
@@ -360,17 +367,14 @@ class TimeSlots extends React.Component {
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='startTime'
                                            editable={{ validator: this.timeValidator.bind(this) }}
-                                           customEditor={{ 
-                                               getElement: this.createTimeEditor,
-                                           }}
-                                           dataSort={ true }>Start Time</TableHeaderColumn>
+                                           dataSort={ true }
+                                           customEditor={{ getElement: this.createTimeEditor}}
+                                           customInsertEditor={ { getElement: this.createTimeInputField } }>Start Time</TableHeaderColumn>
                         <TableHeaderColumn dataField='endTime'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
-                                           customEditor={{ 
-                                                getElement: this.createTimeEditor,
-                                            }}
-                                        dataSort={ true }>End Time</TableHeaderColumn>
-                                        
+                                           editable={{ validator: this.timeValidator.bind(this) }}
+                                           dataSort={ true }
+                                           customEditor={{ getElement: this.createTimeEditor}}
+                                           customInsertEditor={ { getElement: this.createTimeInputField } }>End Time</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>
