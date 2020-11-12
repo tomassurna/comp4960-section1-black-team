@@ -191,6 +191,22 @@ class TimeSlots extends React.Component {
         return cannotBeEmpty.isValid ? response : cannotBeEmpty;
     }
 
+    endTimeValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        const endTime = value.replace(":", ".").split(':')[0];
+        const startTime = row["startTime"].replace(":", ".").split(':')[0];
+        if(parseFloat(startTime) >= parseFloat(endTime)) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Start time must be before end time.';
+            response.notification.title = 'Invalid Entry';
+        }
+
+        const cannotBeEmpty = this.cannotBeEmptyValidator(value, row);
+
+        return cannotBeEmpty.isValid ? response : cannotBeEmpty;
+    }
+
     timeFormatter(value) {
 
     }
@@ -366,12 +382,12 @@ class TimeSlots extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='startTime'
-                                           editable={{ validator: this.timeValidator.bind(this) }}
+                                           editable={{ validator: this.startTimeValidator.bind(this) }}
                                            dataSort={ true }
                                            customEditor={{ getElement: this.createTimeEditor}}
                                            customInsertEditor={ { getElement: this.createTimeInputField } }>Start Time</TableHeaderColumn>
                         <TableHeaderColumn dataField='endTime'
-                                           editable={{ validator: this.timeValidator.bind(this) }}
+                                           editable={{ validator: this.endTimeValidator.bind(this) }}
                                            dataSort={ true }
                                            customEditor={{ getElement: this.createTimeEditor}}
                                            customInsertEditor={ { getElement: this.createTimeInputField } }>End Time</TableHeaderColumn>
