@@ -327,38 +327,6 @@ class TimeSlots extends React.Component {
         );
     };
 
-    customStartTimeField = ( column, attr, editorClass, ignoreEditable) => {
-        return (
-            <select className = {`${editorClass}`} {...attr}>
-                <option key = {null} value = {null} selected>
-                    Please Choose a Start Time ... 
-                    </option> 
-                    { this.state.data.map ((startTime) => (
-                        <option key = {startTime["startTime"]} value = {startTime["id"]}>
-                            {startTime["startTime"]}
-                        </option>
-                    ))
-                    }
-                    </select>
-        );
-    };
-
-    customEndtimeField = ( column, attr, editorClass, ignoreEditable) => {
-        return (
-            <select className = {`${editorClass}`} {...attr}>
-                <option key = {null} value = {null} selected>
-                    Please Choose an End Time ... 
-                    </option> 
-                    { this.state.data.map ((endTime) => (
-                        <option key = {endTime["endTime"]} value = {endTime["id"]}>
-                            {endTime["endTime"]}
-                        </option>
-                    ))
-                    }
-                    </select>
-        );
-    };
-
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         onDeleteRow: this.deleteRowHook.bind(this),
