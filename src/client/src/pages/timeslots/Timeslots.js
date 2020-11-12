@@ -174,6 +174,26 @@ class TimeSlots extends React.Component {
         return response;
     }
 
+    timeValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        const startTime = value.replace(":", ".").split(':')[0];
+        const endTime = row["endTime"].replace(":", ".").split(':')[0];
+        if(parseFloat(startTime) >= parseFloat(endTime)) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Start time must be before end time.';
+            response.notification.title = 'Invalid Entry';
+        }
+
+        const cannotBeEmpty = this.cannotBeEmptyValidator(value, row);
+
+        return cannotBeEmpty.isValid ? response : cannotBeEmpty;
+    }
+
+    timeFormatter(value) {
+
+    }
+
     createCustomInsertButton = () => {
         return (
             <InsertButton
@@ -259,6 +279,38 @@ class TimeSlots extends React.Component {
         );
     };
 
+    customStartTimeField = ( column, attr, editorClass, ignoreEditable) => {
+        return (
+            <select className = {`${editorClass}`} {...attr}>
+                <option key = {null} value = {null} selected>
+                    Please Choose a Start Time ... 
+                    </option> 
+                    { this.state.data.map ((startTime) => (
+                        <option key = {startTime["startTime"]} value = {startTime["id"]}>
+                            {startTime["startTime"]}
+                        </option>
+                    ))
+                    }
+                    </select>
+        );
+    };
+
+    customEndtimeField = ( column, attr, editorClass, ignoreEditable) => {
+        return (
+            <select className = {`${editorClass}`} {...attr}>
+                <option key = {null} value = {null} selected>
+                    Please Choose an End Time ... 
+                    </option> 
+                    { this.state.data.map ((endTime) => (
+                        <option key = {endTime["endTime"]} value = {endTime["id"]}>
+                            {endTime["endTime"]}
+                        </option>
+                    ))
+                    }
+                    </select>
+        );
+    };
+
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
         onDeleteRow: this.deleteRowHook.bind(this),
@@ -277,6 +329,10 @@ class TimeSlots extends React.Component {
         blurToSave: true,
         beforeSaveCell: this.beforeSaveHook.bind(this)
     };
+
+    createTimeEditor = (onUpdate, props) => (
+        <TimeEditor onUpdate = { onUpdate } { ... props } />
+    );
 
     render() {
         return (
@@ -303,11 +359,18 @@ class TimeSlots extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='startTime'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
+                                           editable={{ validator: this.timeValidator.bind(this) }}
+                                           customEditor={{ 
+                                               getElement: this.createTimeEditor,
+                                           }}
                                            dataSort={ true }>Start Time</TableHeaderColumn>
                         <TableHeaderColumn dataField='endTime'
                                            editable={{ validator: this.cannotBeEmptyValidator }}
-                                           dataSort={ true }>End Time</TableHeaderColumn>
+                                           customEditor={{ 
+                                                getElement: this.createTimeEditor,
+                                            }}
+                                        dataSort={ true }>End Time</TableHeaderColumn>
+                                        
                     </BootstrapTable>
                 </div>
             </>
