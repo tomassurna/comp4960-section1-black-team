@@ -13,7 +13,8 @@ import "../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-a
 import $ from "jquery";
 import Alert from "react-s-alert";
 import DropDownEditor from "./DropDownEditor";
-import {animals, colors, names, uniqueNamesGenerator} from "unique-names-generator";
+import {animals, colors, names, uniqueNamesGenerator,} from "unique-names-generator";
+import {orderBy} from "lodash";
 
 class Sessions extends React.Component {
     constructor(props) {
@@ -266,7 +267,45 @@ class Sessions extends React.Component {
     }
 
     timeSlotFormatter(value) {
-        return !!value ? value["startTime"] + " - " + value["endTime"] : "";
+        return !!value
+            ? this.dateFormatter(value["startTime"]) +
+            " - " +
+            this.dateFormatter(value["endTime"])
+            : "";
+    }
+
+    dateFormatter(value) {
+        let isAm = true;
+        if (!value) {
+            return value;
+        }
+
+        let result = "";
+        for (let i = 0; i < 5; i++) {
+            result += value[i];
+        }
+
+        if (result.charAt(0) >= 1 && result.charAt(1) >= 3) {
+            let tens = parseInt(result.charAt(0)) * 10;
+            let ones = parseInt(result.charAt(1));
+            let num = tens + ones;
+            let val = num - 20;
+            let str = num.toString();
+            isAm = false;
+        }
+
+        if (isAm) {
+            result += " AM";
+            if (result.charAt(0) == 0) {
+                result = result.substring(1);
+            }
+        } else {
+            result += " PM";
+            result = result.substring(1);
+            result = result.charAt(0) - 2 + result.substring(1);
+        }
+
+        return result;
     }
 
     createCustomInsertButton = () => {
@@ -332,23 +371,34 @@ class Sessions extends React.Component {
                         Undo Delete
                     </button>
                 ) : null}
-                <button type='button'
-                        className={`btn btn-info edit-mode-btn`}
-                        onClick={this.generateData.bind(this)}>
+                <button
+                    type="button"
+                    className={`btn btn-info edit-mode-btn`}
+                    onClick={this.generateData.bind(this)}
+                >
                     Generate Test Data
                 </button>
             </ButtonGroup>
         );
     };
 
-    generateData(){
-        for(let i = 0; i < 10; i++){
+    generateData() {
+        for (let i = 0; i < 10; i++) {
             this.addRowHook({
-                sessionTitle: uniqueNamesGenerator({ dictionaries: [names, colors, animals], length: 1 }),
-                room: this.state.rooms[Math.floor(Math.random() * Math.floor(this.state.rooms.length))]["id"],
-                speaker: this.state.speakers[Math.floor(Math.random() * Math.floor(this.state.speakers.length))]["id"],
-                timeSlot: this.state.timeSlots[Math.floor(Math.random() * Math.floor(this.state.timeSlots.length))]["id"]
-            })
+                sessionTitle: uniqueNamesGenerator({
+                    dictionaries: [names, colors, animals],
+                    length: 1,
+                }),
+                room: this.state.rooms[
+                    Math.floor(Math.random() * Math.floor(this.state.rooms.length))
+                    ]["id"],
+                speaker: this.state.speakers[
+                    Math.floor(Math.random() * Math.floor(this.state.speakers.length))
+                    ]["id"],
+                timeSlot: this.state.timeSlots[
+                    Math.floor(Math.random() * Math.floor(this.state.timeSlots.length))
+                    ]["id"],
+            });
         }
     }
 
@@ -367,7 +417,7 @@ class Sessions extends React.Component {
                 <option key={null} value={null} selected>
                     Please Choose a Room...
                 </option>
-                {this.state.rooms.map((room) => (
+                {orderBy(this.state.rooms, "name").map((room) => (
                     <option key={room["name"]} value={room["id"]}>
                         {room["name"]}
                     </option>
@@ -382,7 +432,7 @@ class Sessions extends React.Component {
                 <option key={null} value={null} selected>
                     Please Choose a Speaker...
                 </option>
-                {this.state.speakers.map((speaker) => (
+                {orderBy(this.state.speakers, "speakerName").map((speaker) => (
                     <option key={speaker["email"]} value={speaker["id"]}>
                         {speaker["speakerName"]}
                     </option>
@@ -397,12 +447,14 @@ class Sessions extends React.Component {
                 <option key={null} value={null} selected>
                     Please Choose a TimeSlot...
                 </option>
-                {this.state.timeSlots.map((timeSlot) => (
+                {orderBy(this.state.timeSlots, "startTime").map((timeSlot) => (
                     <option
                         key={timeSlot["startTime"] + " - " + timeSlot["endTime"]}
                         value={timeSlot["id"]}
                     >
-                        {timeSlot["startTime"] + " - " + timeSlot["endTime"]}
+                        {this.dateFormatter(timeSlot["startTime"]) +
+                        " - " +
+                        this.dateFormatter(timeSlot["endTime"])}
                     </option>
                 ))}
             </select>
@@ -479,9 +531,8 @@ class Sessions extends React.Component {
                             customEditor={{
                                 getElement: this.createDropDownEditor,
                                 customEditorParameters: {
-                                    data: this.state.rooms,
-                                    getDisplayName: (room) =>
-                                        room["name"]
+                                    data: orderBy(this.state.rooms, "name"),
+                                    getDisplayName: (room) => room["name"],
                                 },
                             }}
                             customInsertEditor={{getElement: this.customRoomField}}
@@ -499,9 +550,8 @@ class Sessions extends React.Component {
                             customEditor={{
                                 getElement: this.createDropDownEditor,
                                 customEditorParameters: {
-                                    data: this.state.speakers,
-                                    getDisplayName: (speaker) =>
-                                        speaker["speakerName"],
+                                    data: orderBy(this.state.speakers, "speakerName"),
+                                    getDisplayName: (speaker) => speaker["speakerName"],
                                 },
                             }}
                             customInsertEditor={{getElement: this.customSpeakerField}}
@@ -511,13 +561,15 @@ class Sessions extends React.Component {
                         </TableHeaderColumn>
                         <TableHeaderColumn
                             dataField="timeSlot"
-                            dataFormat={this.timeSlotFormatter}
+                            dataFormat={this.timeSlotFormatter.bind(this)}
                             customEditor={{
                                 getElement: this.createDropDownEditor,
                                 customEditorParameters: {
-                                    data: this.state.timeSlots,
+                                    data: orderBy(this.state.timeSlots, "startTime"),
                                     getDisplayName: (timeSlot) =>
-                                        timeSlot["startTime"] + " - " + timeSlot["endTime"],
+                                        this.dateFormatter(timeSlot["startTime"]) +
+                                        " - " +
+                                        this.dateFormatter(timeSlot["endTime"]),
                                 },
                             }}
                             customInsertEditor={{getElement: this.customTimeSlotField}}
