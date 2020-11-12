@@ -197,25 +197,11 @@ class Rooms extends React.Component {
         const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         const MAX_CAPACITY = 200;
         const MIN_CAPACITY = 1;
-        // checks for empty input
-        if (!value) {
-            response.isValid = false;
-            response.notification.type = 'error';
-            response.notification.msg = 'Value must be inserted';
-            response.notification.title = 'Requested Value';
-        }
-        // check for valid capacity
-        else if (value < MIN_CAPACITY || value > MAX_CAPACITY) {
+        // check for valid capacity 
+        if (value < MIN_CAPACITY || value > MAX_CAPACITY) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Invalid room capacity (1-200)';
-            response.notification.title = 'Requested Value';
-        }
-        // check if input is an integer
-        else if (isNaN(value)){
-            response.isValid = false;
-            response.notification.type = 'error';
-            response.notification.msg = 'Value must be an integer';
             response.notification.title = 'Requested Value';
         }
         return response;
@@ -250,6 +236,12 @@ class Rooms extends React.Component {
     handleModalClose(closeModal) {
         closeModal();
     };
+
+    customCapacityField = (column, attr, editorClass, ignoreEditable) => {
+        return (
+          <input type="number" min="1" max="200" defaultValue="50" className={ `${editorClass}` } { ...attr }/>
+        );
+      }
 
     createCustomModalFooter = (closeModal) => {
         return (
@@ -340,6 +332,7 @@ class Rooms extends React.Component {
                                            dataSort={ true }>Room Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='capacity'
                                            editable={{ validator: this.capacityValidator.bind(this) }}
+                                           customInsertEditor={ { getElement: this.customCapacityField } }
                                            dataSort={ true }>Capacity</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
