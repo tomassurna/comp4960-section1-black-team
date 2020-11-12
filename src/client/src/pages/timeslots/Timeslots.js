@@ -175,6 +175,73 @@ class TimeSlots extends React.Component {
         return response;
     }
 
+    startTimeValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        const startTime = value.replace(":", ".").split(':')[0];
+        const endTime = row["endTime"].replace(":", ".").split(':')[0];
+        if(parseFloat(startTime) >= parseFloat(endTime)) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Start time must be before end time.';
+            response.notification.title = 'Invalid Entry';
+        }
+
+        const cannotBeEmpty = this.cannotBeEmptyValidator(value, row);
+
+        return cannotBeEmpty.isValid ? response : cannotBeEmpty;
+    }
+
+    endTimeValidator(value, row) {
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
+        const endTime = value.replace(":", ".").split(':')[0];
+        const startTime = row["startTime"].replace(":", ".").split(':')[0];
+        if(parseFloat(startTime) >= parseFloat(endTime)) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Start time must be before end time.';
+            response.notification.title = 'Invalid Entry';
+        }
+
+        const cannotBeEmpty = this.cannotBeEmptyValidator(value, row);
+
+        return cannotBeEmpty.isValid ? response : cannotBeEmpty;
+    }
+
+    dateFormatter(value) {
+        let isAm = true;
+        if(!value) {
+            return value;
+        }
+    
+        let result = "";
+        for(let i = 0; i < 5; i++) {
+            result += value[i];
+        }
+    
+        if((result.charAt(0) >= 1) && (result.charAt(1) >= 3)) {
+            let tens = parseInt(result.charAt(0)) * 10;
+            let ones = parseInt(result.charAt(1));
+            let num = tens + ones;
+            let val = num - 20;
+            let str = num.toString();
+            isAm = false;
+        }
+    
+        if(isAm) {
+            result += " AM";
+            if (result.charAt(0) == 0) {
+                result = result.substring(1);
+            }
+        }
+        else {
+            result += " PM";
+            result = result.substring(1);
+            result = result.charAt(0) - 2 + result.substring(1);
+        }
+    
+        return result;
+    }
+
     createCustomInsertButton = () => {
         return (
             <InsertButton
@@ -314,12 +381,14 @@ class TimeSlots extends React.Component {
                                            isKey
                                            dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='startTime'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
+                                           dataFormat={this.dateFormatter}
+                                           editable={{ validator: this.startTimeValidator.bind(this) }}
                                            dataSort={ true }
                                            customEditor={{ getElement: this.createTimeEditor}}
                                            customInsertEditor={ { getElement: this.createTimeInputField } }>Start Time</TableHeaderColumn>
                         <TableHeaderColumn dataField='endTime'
-                                           editable={{ validator: this.cannotBeEmptyValidator }}
+                                           dataFormat={this.dateFormatter}
+                                           editable={{ validator: this.endTimeValidator.bind(this) }}
                                            dataSort={ true }
                                            customEditor={{ getElement: this.createTimeEditor}}
                                            customInsertEditor={ { getElement: this.createTimeInputField } }>End Time</TableHeaderColumn>
