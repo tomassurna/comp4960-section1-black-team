@@ -199,11 +199,13 @@ class Rooms extends React.Component {
         const MAX_CAPACITY = 200;
         const MIN_CAPACITY = 1;
         // check for valid capacity 
-        if (value < MIN_CAPACITY || value > MAX_CAPACITY) {
+        if (value < MIN_CAPACITY) {
             response.isValid = false;
             response.notification.type = 'error';
-            response.notification.msg = 'Invalid room capacity (1-200)';
+            response.notification.msg = 'Invalid room capacity';
             response.notification.title = 'Requested Value';
+        } else if(value > MAX_CAPACITY){
+            window.confirm("Are you sure about this capacity?");
         }
         return response;
     }
