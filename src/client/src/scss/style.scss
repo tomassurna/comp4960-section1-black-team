@@ -71,3 +71,8 @@
   float: right;
   display: flex;
 }
+
+.react-bs-container-body{
+  max-height: 75vh !important;
+  overflow-y: auto;
+}
