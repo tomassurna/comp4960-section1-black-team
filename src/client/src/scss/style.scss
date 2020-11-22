@@ -7,17 +7,17 @@
 }
 
 // Speaker - buttons, modal 
-.add-speaker-btn{
+.add-btn{
   height: 40px;
   margin-right: 5px;
 }
 
-.delete-speaker-btn{
+.delete-btn{
   height: 40px;
   margin-right: 5px;
 }
 
-.export-speaker-btn{
+.export-btn{
   height: 40px;
   margin-right: 5px; 
 }
@@ -38,7 +38,7 @@
   margin-left: 4px;
 }
 
-.speaker-modal-header{
+.modal-header{
   display: inline; 
 }
 
@@ -58,6 +58,21 @@
 }
 
 // table
-.duplicate-speaker-name{
+.duplicate-value{
   background-color: rgba(255,0,35,0.2);
+}
+
+// calendar
+.fc-event-main{
+  font-size: 150%;
+}
+
+.lunch-time-input-area{
+  float: right;
+  display: flex;
+}
+
+.react-bs-container-body{
+  max-height: 75vh !important;
+  overflow-y: auto;
 }

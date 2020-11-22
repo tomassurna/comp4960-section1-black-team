@@ -36,15 +36,8 @@ public class RoomController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/addRoom")
-    public Room addRoom(@RequestBody Room room) {
-        room.setIsNew(true);
-        return roomRepository.save(room);
-    }
-
-    @ResponseBody
-    @PostMapping(path = "/updateRoom")
-    public Room updateRoom(@RequestBody Room room) {
+    @PostMapping(path = "/saveRoom")
+    public Room saveRoom(@RequestBody Room room) {
         return roomRepository.save(room);
     }
 

@@ -12,6 +12,7 @@ import {
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
 import Alert from 'react-s-alert';
+import {animals, colors, names, uniqueNamesGenerator} from "unique-names-generator";
 
 class Speakers extends React.Component {
     constructor(props) {
@@ -25,7 +26,7 @@ class Speakers extends React.Component {
     }
 
     getData() {
-        return $.ajax({
+        $.ajax({
             method: "GET",
             url: "/Speaker/all",
             type: "json",
@@ -61,7 +62,7 @@ class Speakers extends React.Component {
 
         $.ajax({
             method: "POST",
-            url: "/Speaker/addSpeaker",
+            url: "/Speaker/saveSpeaker",
             data: JSON.stringify(row),
             type: "json",
             contentType: "application/json",
@@ -121,9 +122,14 @@ class Speakers extends React.Component {
     beforeSaveHook(row, cellName, cellValue, done) {
         let mockRow = { ...row };
         mockRow[cellName] = cellValue;
+
+        if (row[cellName] === mockRow[cellName]) {
+            return true;
+        }
+
         $.ajax({
             method: "POST",
-            url: "/Speaker/updateSpeaker",
+            url: "/Speaker/saveSpeaker",
             data: JSON.stringify(mockRow),
             type: "json",
             contentType: "application/json",
@@ -163,7 +169,7 @@ class Speakers extends React.Component {
                 (tableRow) =>
                     tableRow["speakerName"] === row["speakerName"] && !row["email"] && !tableRow["email"]
             ).length >= 2
-                ? "duplicate-speaker-name"
+                ? "duplicate-value"
                 : "";
         }
     }
@@ -173,7 +179,7 @@ class Speakers extends React.Component {
         if (!value) {
             response.isValid = false;
             response.notification.type = 'error';
-            response.notification.msg = 'Speaker name must be inserted';
+            response.notification.msg = 'Value name must be inserted';
             response.notification.title = 'Requested Value';
         }
         return response;
@@ -188,7 +194,7 @@ class Speakers extends React.Component {
             response.notification.msg = 'Email entered was not valid';
             response.notification.title = 'Invalid Entry';
         } else if (!!value && this.state.data.filter(
-            (tableRow) => tableRow["email"] === value).length >= 1) {
+            (tableRow) => (tableRow["email"] === value) && tableRow["id"] !== row["id"]).length >= 1) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not unique';
@@ -230,7 +236,7 @@ class Speakers extends React.Component {
             <InsertButton
                 btnText='Insert Speaker'
                 btnContextual='btn-success'
-                className='add-speaker-btn' />
+                className='add-btn' />
         );
     };
 
@@ -239,33 +245,33 @@ class Speakers extends React.Component {
             <DeleteButton
                 btnText='Delete Speaker'
                 btnContextual='btn-danger'
-                className='delete-speaker-btn' />
+                className='delete-btn' />
         );
     };
 
     createCustomModalHeader = () => {
         return (
             <InsertModalHeader
-                className='speaker-modal-header'
+                className='modal-header'
                 title='Add Speaker' />
         );
     };
 
     handleModalClose(closeModal) {
         closeModal();
-      }
+    };
 
     createCustomModalFooter = (closeModal) => {
         return (
             <InsertModalFooter
-            className='speaker-modal-footer'
-            closeBtnContextual='btn-light'
-            saveBtnContextual='btn-success'
-            closeBtnClass='speaker-modal-close-btn'
-            saveBtnClass='speaker-modal-save-btn'
-            onModalClose={ () => this.handleModalClose(closeModal) }/>
-        );    
-    }
+                className='modal-footer'
+                closeBtnContextual='btn-light'
+                saveBtnContextual='btn-success'
+                closeBtnClass='modal-close-btn'
+                saveBtnClass='modal-save-btn'
+                onModalClose={ () => this.handleModalClose(closeModal) }/>
+        );
+    };
 
     createCustomButtonGroup = props => {
         return (
@@ -284,9 +290,25 @@ class Speakers extends React.Component {
                         onClick={this.onUndo.bind(this)}>
                         Undo Delete
                     </button> : null}
+                <button type='button'
+                        className={`btn btn-info edit-mode-btn`}
+                        onClick={this.generateData.bind(this)}>
+                    Generate Test Data
+                </button>
             </ButtonGroup>
         );
     };
+
+    generateData(){
+        for(let i = 0; i < 10; i++){
+            this.addRowHook({
+                speakerName: uniqueNamesGenerator({ dictionaries: [names, colors, animals] }),
+                email: uniqueNamesGenerator({ dictionaries: [names, colors, animals] }) + "@gmail.com",
+                everydayNumber: Math.floor(Math.random() * 10000000000),
+                dayOfNumber: Math.floor(Math.random() * 10000000000)
+            })
+        }
+    }
 
     createCustomSearchField = () => {
         return (
@@ -341,15 +363,19 @@ class Speakers extends React.Component {
                             dataField='id'>id</TableHeaderColumn>
                         <TableHeaderColumn dataField='speakerName'
                             editable={{ validator: this.cannotBeEmptyValidator }}
-                            columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
+                            columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}
+                            dataSort={ true }>Speaker Name</TableHeaderColumn>
                         <TableHeaderColumn dataField='email'
-                            editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
+                            editable={{validator: this.emailValidator.bind(this)}}
+                            dataSort={ true }>Email</TableHeaderColumn>
                         <TableHeaderColumn dataField='everydayNumber'
                             dataFormat={this.phoneNumberFormatter}
-                            editable={{ validator: this.phoneNumberValidator }}>Everyday Number</TableHeaderColumn>
+                            editable={{ validator: this.phoneNumberValidator }}
+                            dataSort={ true }>Everyday Number</TableHeaderColumn>
                         <TableHeaderColumn dataField='dayOfNumber'
                             dataFormat={this.phoneNumberFormatter}
-                            editable={{ validator: this.phoneNumberValidator }}>Day Of Number</TableHeaderColumn>
+                            editable={{ validator: this.phoneNumberValidator }}
+                            dataSort={ true }>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>

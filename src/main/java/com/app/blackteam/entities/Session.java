@@ -1,5 +1,8 @@
 package com.app.blackteam.entities;
 
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,13 +10,16 @@ public class Session extends PersistableEntity {
     @Column(nullable = false)
     private String sessionTitle;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private TimeSlot timeSlot;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private Speaker speaker;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne
+    @NotFound(action= NotFoundAction.IGNORE)
     private Room room;
 
     public Session() {
