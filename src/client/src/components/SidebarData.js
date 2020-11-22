@@ -32,6 +32,12 @@ export default [
     name: 'Rooms',
     to: '/pages/rooms',
     icon: 'cil-map',
+  },
+  {
+    _tag: 'CSidebarNavItem',
+    name: 'Day of Password',
+    to: '/pages/password',
+    icon: 'cil-lock-locked',
   }
 ]
 
