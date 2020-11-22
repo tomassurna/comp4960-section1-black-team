@@ -7,18 +7,18 @@ import javax.validation.constraints.Pattern;
 
 @Entity
 public class Speaker extends PersistableEntity {
-    
+
     @Column(nullable = false)
     private String speakerName;
 
-    @Column(nullable = false)
     @Email
+    @Column(length = 100)
     private String email;
 
-    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
+    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$|")
     private String everydayNumber;
 
-    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$")
+    @Pattern(regexp = "^\\(?([0-9]{3})\\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$|")
     private String dayOfNumber;
 
     public Speaker() {

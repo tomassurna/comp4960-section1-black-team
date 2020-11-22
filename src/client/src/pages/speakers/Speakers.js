@@ -1,15 +1,27 @@
 import React from 'react'
-import {BootstrapTable, TableHeaderColumn, InsertButton, ExportCSVButton, DeleteButton, InsertModalHeader} from 'react-bootstrap-table';
+import {
+    BootstrapTable,
+    ButtonGroup,
+    DeleteButton,
+    InsertButton,
+    InsertModalHeader,
+    InsertModalFooter,
+    SearchField,
+    TableHeaderColumn
+} from 'react-bootstrap-table';
 import '../../../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css';
 import $ from 'jquery';
+import Alert from 'react-s-alert';
 
 class Speakers extends React.Component {
     constructor(props) {
         super(props);
         this.getData();
         this.state = {
-            data: this.data
-        }
+            data: [],
+            editMode: false,
+            deletedRows: []
+        };
     }
 
     getData() {
@@ -24,20 +36,29 @@ class Speakers extends React.Component {
                 });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error('Unable to load table data.', {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
+
             this.setState({
                 data: []
             });
         });
     }
 
-
     addRowHook(row) {
-        const data = this.state.data || [];
-
         // Clear our the id field since the backend will auto generate one for us
         row.id = null;
+        row.isNew = true;
+        this.addRowAjaxCall(row);
+    }
+
+    // We use this call here when we do not want to delete the row id
+    addRowAjaxCall(row) {
+        const data = this.state.data;
+
         $.ajax({
             method: "POST",
             url: "/Speaker/addSpeaker",
@@ -49,14 +70,30 @@ class Speakers extends React.Component {
                 this.setState({
                     data: data
                 });
+                Alert.success("Speaker added.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error saving row.", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
         });
     }
 
     deleteRowHook(rowIdsToDelete) {
+        const data = this.state.data;
+        const rowsToDelete = data.filter((row) => rowIdsToDelete.includes(row.id));
+
+        const currentDeletedRows = this.state.deletedRows;
+        currentDeletedRows.push(rowsToDelete);
+
+        this.setState({ deletedRows: currentDeletedRows });
+
         $.ajax({
             method: "POST",
             url: "/Speaker/deleteSpeaker",
@@ -64,16 +101,25 @@ class Speakers extends React.Component {
             type: "json",
             contentType: "application/json",
             success: (response) => {
-                // TODO: Implement some undo function
+                this.setState({ data: data.filter((row) => !rowIdsToDelete.includes(row.id)) });
+
+                Alert.success("Row(s) deleted.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error deleting row(s).", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
         });
     }
 
     beforeSaveHook(row, cellName, cellValue, done) {
-        let mockRow = {...row};
+        let mockRow = { ...row };
         mockRow[cellName] = cellValue;
         $.ajax({
             method: "POST",
@@ -82,20 +128,48 @@ class Speakers extends React.Component {
             type: "json",
             contentType: "application/json",
             success: (response) => {
-                // TODO: Implement some undo function
                 done(true);
+                Alert.success("Row updated.", {
+                    position: 'top-right',
+                    effect: 'stackslide',
+                    timeout: 2000
+                });
             }
         }).catch(function (xhr, status, error) {
-            // TODO: Some form of error handling.
-            console.log(error);
+            Alert.error("Error saving row.", {
+                position: 'top-right',
+                effect: 'stackslide',
+                timeout: 2000
+            });
             done(false);
         });
 
         return 1;
     }
 
+    onConfirmDeleteRow(next, dropRowKeys) {
+        next();
+    }
+
+    onUndo() {
+        // When we undo, add back the deleted rows
+        const deletedRows = this.state.deletedRows.pop();
+        deletedRows.forEach((row) => this.addRowAjaxCall(row));
+    }
+
+    getClassNameForDuplicateSpeakers(cell, row, rowIndex, columnIndex) {
+        if (!!row["speakerName"]) {
+            return this.state.data.filter(
+                (tableRow) =>
+                    tableRow["speakerName"] === row["speakerName"] && !row["email"] && !tableRow["email"]
+            ).length >= 2
+                ? "duplicate-speaker-name"
+                : "";
+        }
+    }
+
     cannotBeEmptyValidator(value, row) {
-        const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         if (!value) {
             response.isValid = false;
             response.notification.type = 'error';
@@ -106,21 +180,27 @@ class Speakers extends React.Component {
     }
 
     emailValidator(value, row) {
-        const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         const re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-        if (!(String(value).match(re))) {
+        if (!(String(value).match(re)) && !!value) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Email entered was not valid';
             response.notification.title = 'Invalid Entry';
+        } else if (!!value && this.state.data.filter(
+            (tableRow) => tableRow["email"] === value).length >= 1) {
+            response.isValid = false;
+            response.notification.type = 'error';
+            response.notification.msg = 'Email entered was not unique';
+            response.notification.title = 'Invalid Entry'
         }
         return response;
     }
 
     phoneNumberValidator(value, row) {
-        const response = {isValid: true, notification: {type: 'success', msg: '', title: ''}};
+        const response = { isValid: true, notification: { type: 'success', msg: '', title: '' } };
         const re = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
-        if (!(String(value).match(re))) {
+        if (!(String(value).match(re)) && !!value) {
             response.isValid = false;
             response.notification.type = 'error';
             response.notification.msg = 'Number entered was not valid';
@@ -129,50 +209,104 @@ class Speakers extends React.Component {
         return response;
     }
 
-    // create custom buttons and modal 
+    phoneNumberFormatter(value) {
+        // Returns empty if there is no number
+        if (!value) {
+            return value;
+        }
+        // Removes all non-number characters from the number string
+        let formattedValue = "";
+        for (let i = 0; i < value.length; i++) {
+            if (value[i] >= '0' && value[i] <= '9') {
+                formattedValue += value[i];
+            }
+        }
+        // Creates a new formatted version of edited phone number
+        return ('(' + formattedValue.slice(0, 3) + ') ' + formattedValue.slice(3, 6) + '-' + formattedValue.slice(6, 10));
+    }
+
     createCustomInsertButton = () => {
-      return (
-        <InsertButton
-          btnText='Insert Speaker'
-          btnContextual='btn-success'
-          className='add-speaker-btn'
-          />
-      );
-    }
+        return (
+            <InsertButton
+                btnText='Insert Speaker'
+                btnContextual='btn-success'
+                className='add-speaker-btn' />
+        );
+    };
 
-    createCustomExportCSVButton = () =>{
-      return (
-        <ExportCSVButton
-          btnText='Export to CSV'
-          btnContextual='btn-info'
-          className='export-speaker-btn'/>
-      );
-    }
-
-    createCustomDeleteButton = () =>{
-      return (
-        <DeleteButton
-          btnText='Delete Speaker'
-          btnContextual='btn-danger'
-          className='delete-speaker-btn'/>
-      );
-    }
+    createCustomDeleteButton = () => {
+        return (
+            <DeleteButton
+                btnText='Delete Speaker'
+                btnContextual='btn-danger'
+                className='delete-speaker-btn' />
+        );
+    };
 
     createCustomModalHeader = () => {
-      return (
-        <InsertModalHeader
-          className='speaker-modal-header'
-          title='Add Speaker'/>
-      );
-    } 
+        return (
+            <InsertModalHeader
+                className='speaker-modal-header'
+                title='Add Speaker' />
+        );
+    };
+
+    handleModalClose(closeModal) {
+        closeModal();
+      }
+
+    createCustomModalFooter = (closeModal) => {
+        return (
+            <InsertModalFooter
+            className='speaker-modal-footer'
+            closeBtnContextual='btn-light'
+            saveBtnContextual='btn-success'
+            closeBtnClass='speaker-modal-close-btn'
+            saveBtnClass='speaker-modal-save-btn'
+            onModalClose={ () => this.handleModalClose(closeModal) }/>
+        );    
+    }
+
+    createCustomButtonGroup = props => {
+        return (
+            <ButtonGroup sizeClass='btn-group-md'>
+                {props.showSelectedOnlyBtn}
+                {props.insertBtn}
+                {props.deleteBtn}
+                <button type='button'
+                    className={`btn btn-info edit-mode-btn`}
+                    onClick={() => this.setState({ editMode: !this.state.editMode })}>
+                    {this.state.editMode ? "Exit Edit Mode" : "Edit Mode"}
+                </button>
+                {this.state.deletedRows.length > 0 ?
+                    <button type='button'
+                        className={`btn btn-warning undo-btn`}
+                        onClick={this.onUndo.bind(this)}>
+                        Undo Delete
+                    </button> : null}
+            </ButtonGroup>
+        );
+    };
+
+    createCustomSearchField = () => {
+        return (
+            <SearchField
+                className='speaker-search-field'
+                style={{ height: 40, fontSize: 15 }} />
+        );
+    };
 
     tableProps = {
         onAddRow: this.addRowHook.bind(this),
-        afterDeleteRow: this.deleteRowHook.bind(this),
+        onDeleteRow: this.deleteRowHook.bind(this),
         insertBtn: this.createCustomInsertButton,
-        exportCSVBtn: this.createCustomExportCSVButton,
-        deleteBtn:this.createCustomDeleteButton,
-        insertModalHeader: this.createCustomModalHeader
+        deleteBtn: this.createCustomDeleteButton,
+        insertModalHeader: this.createCustomModalHeader,
+        insertModalFooter: this.createCustomModalFooter,
+        btnGroup: this.createCustomButtonGroup,
+        searchField: this.createCustomSearchField,
+        clearSearch: true,
+        handleConfirmDeleteRow: this.onConfirmDeleteRow.bind(this)
     };
 
     cellEditProps = {
@@ -190,22 +324,32 @@ class Speakers extends React.Component {
                     </div>
                 </div>
                 <div>
-                    <BootstrapTable striped hover condensed
-                                    data={this.state.data}
-                        // pagination
-                                    exportCSV
-                                    version='4'
-                                    insertRow
-                                    deleteRow
-                                    selectRow={{mode: 'checkbox'}}
-                                    options={this.tableProps}
-                                    cellEdit={this.cellEditProps}>
-                        <TableHeaderColumn hidden hiddenOninsert autoValue isKey dataField='id'>id</TableHeaderColumn>
-                        <TableHeaderColumn dataField='speakerName' editable={{validator: this.cannotBeEmptyValidator}}>Speaker
-                            Name</TableHeaderColumn>
-                        <TableHeaderColumn dataField='email' editable={{validator: this.emailValidator}}>Email</TableHeaderColumn>
-                        <TableHeaderColumn dataField='everydayNumber' editable={{validator: this.phoneNumberValidator}}>Everyday Number</TableHeaderColumn>
-                        <TableHeaderColumn dataField='dayOfNumber'editable={{validator: this.phoneNumberValidator}}>Day Of Number</TableHeaderColumn>
+                    <BootstrapTable hover
+                        condensed
+                        data={this.state.data}
+                        search
+                        version='4'
+                        insertRow
+                        deleteRow
+                        selectRow={{ mode: 'checkbox' }}
+                        options={this.tableProps}
+                        cellEdit={this.state.editMode ? this.cellEditProps : {}}>
+                        <TableHeaderColumn hidden
+                            hiddenOninsert
+                            autoValue
+                            isKey
+                            dataField='id'>id</TableHeaderColumn>
+                        <TableHeaderColumn dataField='speakerName'
+                            editable={{ validator: this.cannotBeEmptyValidator }}
+                            columnClassName={this.getClassNameForDuplicateSpeakers.bind(this)}>Speaker Name</TableHeaderColumn>
+                        <TableHeaderColumn dataField='email'
+                            editable={{validator: this.emailValidator.bind(this)}}>Email</TableHeaderColumn>
+                        <TableHeaderColumn dataField='everydayNumber'
+                            dataFormat={this.phoneNumberFormatter}
+                            editable={{ validator: this.phoneNumberValidator }}>Everyday Number</TableHeaderColumn>
+                        <TableHeaderColumn dataField='dayOfNumber'
+                            dataFormat={this.phoneNumberFormatter}
+                            editable={{ validator: this.phoneNumberValidator }}>Day Of Number</TableHeaderColumn>
                     </BootstrapTable>
                 </div>
             </>

@@ -22,6 +22,22 @@
   margin-right: 5px; 
 }
 
+.edit-mode-btn{
+  height: 40px;
+  margin-right: 5px;
+}
+
+.undo-btn, .undo-btn:hover, .undo-btn:active, .undo-btn:focus, .undo-btn:visited{
+  height: 40px;
+  margin-right: 5px;
+  color:white !important;
+}
+
+.react-bs-table-search-clear-btn{
+  height: 40px;
+  margin-left: 4px;
+}
+
 .speaker-modal-header{
   display: inline; 
 }
@@ -29,10 +45,19 @@
 // error message
 .bg-danger{
   color: #e55353!important;
-  background-color: #ffffff!important;
+  background-color: transparent!important;
 }
 
 // tool bar
 .react-bs-table-tool-bar{
   height: 60px;
+}
+
+.s-alert-box{
+  margin-top: 2%;
+}
+
+// table
+.duplicate-speaker-name{
+  background-color: rgba(255,0,35,0.2);
 }
