@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import {
   CButton,
   CCard,
@@ -15,12 +14,13 @@ import {
   CRow
 } from '@coreui/react'
 import CIcon from '@coreui/icons-react'
+import { freeSet } from "@coreui/icons"
 
 const Login = () => {
   return (
     <div>
         <h1>Boston Code Camp</h1>
-  
+
     <div className="c-app c-default-layout flex-row align-items-center">
       <CContainer>
         <CRow className="justify-content-center">
@@ -34,7 +34,7 @@ const Login = () => {
                     <CInputGroup className="mb-3">
                       <CInputGroupPrepend>
                         <CInputGroupText>
-                          <CIcon name="cil-user" />
+                          <CIcon content={freeSet.cilUser} />
                         </CInputGroupText>
                       </CInputGroupPrepend>
                       <CInput type="text" placeholder="Username" autoComplete="username" />
@@ -42,7 +42,7 @@ const Login = () => {
                     <CInputGroup className="mb-4">
                       <CInputGroupPrepend>
                         <CInputGroupText>
-                          <CIcon name="cil-lock-locked" />
+                          <CIcon content={freeSet.cilLockLocked} />
                         </CInputGroupText>
                       </CInputGroupPrepend>
                       <CInput type="password" placeholder="Password" autoComplete="current-password" />
@@ -62,6 +62,6 @@ const Login = () => {
     </div>
     </div>
   )
-}
+};
 
 export default Login
