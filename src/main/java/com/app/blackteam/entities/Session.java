@@ -3,7 +3,9 @@ package com.app.blackteam.entities;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.OneToOne;
 
 @Entity
 public class Session extends PersistableEntity {
@@ -11,16 +13,20 @@ public class Session extends PersistableEntity {
     private String sessionTitle;
 
     @OneToOne
-    @NotFound(action= NotFoundAction.IGNORE)
+    @NotFound(action = NotFoundAction.IGNORE)
     private TimeSlot timeSlot;
 
     @OneToOne
-    @NotFound(action= NotFoundAction.IGNORE)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Speaker speaker;
 
     @OneToOne
-    @NotFound(action= NotFoundAction.IGNORE)
+    @NotFound(action = NotFoundAction.IGNORE)
     private Room room;
+
+    @OneToOne
+    @NotFound(action = NotFoundAction.IGNORE)
+    private Count count;
 
     public Session() {
     }
@@ -62,6 +68,15 @@ public class Session extends PersistableEntity {
 
     public Session setRoom(Room room) {
         this.room = room;
+        return this;
+    }
+
+    public Count getCount() {
+        return count;
+    }
+
+    public Session setCount(Count count) {
+        this.count = count;
         return this;
     }
 }

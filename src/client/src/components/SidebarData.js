@@ -35,6 +35,12 @@ export default [
   },
   {
     _tag: 'CSidebarNavItem',
+    name: 'Counts',
+    to: '/pages/count',
+    icon: 'cil-people',
+  },
+  {
+    _tag: 'CSidebarNavItem',
     name: 'Day of Password',
     to: '/pages/password',
     icon: 'cil-lock-locked',
