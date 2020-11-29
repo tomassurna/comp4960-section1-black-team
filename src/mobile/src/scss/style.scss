@@ -1,2 +1,34 @@
 // Import CoreUI styles
 @import "~@coreui/coreui/scss/coreui.scss";
+
+.c-app {
+  min-height: 80vh;
+  max-height: 85vh;
+}
+
+.title {
+  text-align: center;
+}
+
+.invalid {
+  color: red;
+  margin-top: -1rem;
+  margin-bottom: 1rem;
+}
+
+.ReactModal__Content {
+  position: unset !important;
+  inset: unset !important;
+  width: 80%;
+  margin: auto;
+  padding: 0 !important;
+}
+
+.ReactModal__Overlay {
+  display: flex;
+}
+
+label {
+  display: inline-block;
+  margin-bottom: 0.5rem;
+}

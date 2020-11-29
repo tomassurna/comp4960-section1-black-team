@@ -38,6 +38,11 @@
   margin-left: 4px;
 }
 
+.react-bs-table table td,
+.react-bs-table table th {
+  white-space: unset !important;
+}
+
 .modal-header{
   display: inline; 
 }

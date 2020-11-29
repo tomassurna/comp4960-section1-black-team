@@ -18,7 +18,7 @@ public class DayOfPasswordController {
     }
 
     @ResponseBody
-    @GetMapping(path = "/authenticate")
+    @PostMapping(path = "/authenticate")
     public boolean authenticate(@RequestBody String password) {
         return StreamSupport.stream(dayOfPasswordRepository.findAll().spliterator(), false)
                 .anyMatch(dayOfPassword -> dayOfPassword.getPassword().equals(password));

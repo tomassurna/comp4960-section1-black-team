@@ -7,6 +7,7 @@ const Speakers = React.lazy(() => import('./pages/speakers/Speakers'));
 const Sessions = React.lazy(() => import('./pages/sessions/Sessions'));
 const Rooms = React.lazy(() => import('./pages/rooms/Rooms'));
 const Password = React.lazy(() => import('./pages/password/DayOfPassword'));
+const Count = React.lazy(() => import('./pages/count/Count'));
 
 // set path for every page
 const routes = [
@@ -17,6 +18,7 @@ const routes = [
   { path: '/pages/sessions', name: 'Sessions', component: Sessions },
   { path: '/pages/rooms', name: 'Rooms', component: Rooms },
   { path: '/pages/password', name: 'Day of Password', component: Password },
+  { path: '/pages/count', name: 'Count', component: Count },
 ];
 
 export default routes;
