@@ -68,7 +68,7 @@ Software Engineering Final Project (Group)
            
     To make a new user and database for the application. 
        
-#### Intellij
+#### Intellij (Web App & Server Only)
 
 1. Open IntelliJ and add a new project from Version Control, pasting in the HTTPS of the repository. 
 
@@ -76,10 +76,30 @@ Software Engineering Final Project (Group)
 
 3. Wait until  dependencies have been updated, then click the green run button. Make the MySQL Docker instance is running.
 
-#### VsCode
+#### VsCode (Web App & Server Only)
 
 1. Open VsCode and install Java and Maven plugins
 
 2. Preferences > Settings > Search For `Java Home`. Click `Edit In Settings.json`. Add your Java path, which should be like `C:\Program Files\Java\jdk-14.0.1` depending on your version.
 
 3. Explorer > Maven > blackteam. Right click `blackteam` and click `Install`. Once that install is done, right click `blackteam` and click `custom`. Then paste in `frontend:install-node-and-yarn frontend:yarn process-resources spring-boot:build-image spring-boot:run`. This will run the application. Every time you want to run the application, right click `blackteam` and click `History`. Then select the string pasted in the `custom` dialog. 
+
+### Mobile App
+
+The mobile app is a separate application then the main web app. To run the mobile app:
+
+1. Run the server through the Maven configuration described above. Or by running the Spring Boot Framework individually. 
+
+2. Navigate to `/src/mobile/` and run:
+
+   ```bash
+   npm install
+   ```
+   
+3. Once dependencies are installed, run:
+
+    ```bash
+    nm start
+    ```
+   
+   The mobile app will now launch in a web browser. The backend is the same server as the main web app. 
