@@ -100,7 +100,7 @@ The mobile app is a separate application then the main web app. To run the mobil
 3. Once dependencies are installed, run:
 
     ```bash
-    nm start
+    npm start
     ```
    
    The mobile app will now launch in a web browser. The backend is the same server as the main web app. 
