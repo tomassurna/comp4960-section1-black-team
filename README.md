@@ -1,6 +1,7 @@
 # comp4960-section1-black-team
 Software Engineering Final Project (Group)
 
+Group's work over the course of the project can be found under `/docs/`
 
 #### Dev Environment Installation Instructions:
 1. Download latest MySQL installer for Windows from `https://dev.mysql.com/downloads/installer/` (The second option with more downloads). 
@@ -84,7 +85,7 @@ Software Engineering Final Project (Group)
 
 3. Explorer > Maven > blackteam. Right click `blackteam` and click `Install`. Once that install is done, right click `blackteam` and click `custom`. Then paste in `frontend:install-node-and-yarn frontend:yarn process-resources spring-boot:build-image spring-boot:run`. This will run the application. Every time you want to run the application, right click `blackteam` and click `History`. Then select the string pasted in the `custom` dialog. 
 
-### Mobile App
+#### Mobile App
 
 The mobile app is a separate application then the main web app. To run the mobile app:
 

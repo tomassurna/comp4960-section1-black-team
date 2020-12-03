@@ -187,7 +187,9 @@ class Count extends React.Component {
   }
 
   sessionFormatter(value) {
-    return !!value ? value["sessionTitle"] + " - " + value["room"]["name"] : "";
+    const room = !!value.room ? value.room.name : "";
+
+    return !!value ? value["sessionTitle"] + " - " + room : "";
   }
 
   createCustomInsertButton = () => {

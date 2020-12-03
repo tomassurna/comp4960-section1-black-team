@@ -12,7 +12,7 @@ class AddCountModal extends React.Component {
           beginningCount: 0,
           middleCount: 0,
           endCount: 0,
-          counterName: "UserName",
+          counterName: this.props.username,
         },
         ...props.session.count,
       },
@@ -92,10 +92,14 @@ class AddCountModal extends React.Component {
                 -
               </h5>
               <h5 style={{ marginBottom: 0 }}>
-                {this.props.session.room.name}
+                {!!this.props.session.room
+                    ? this.props.session.room.name
+                    : ""}
               </h5>
             </div>
-            <h5>{this.state.count.counterName}</h5>
+            <h5 style={{ marginTop: ".5rem", fontWeight: "bold" }}>
+              Counter: {this.state.count.counterName}
+            </h5>
           </div>
         </div>
         <div className={"modal-body"}>
