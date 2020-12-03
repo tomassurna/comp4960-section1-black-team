@@ -9,7 +9,7 @@ class TimeInputField extends React.Component {
         this.state = {
             selectedTime: props.defaultValue || "12:00:00",
             selectedHour: (props.defaultValue || "12").split(":")[0],
-            selectedMinute: (props.defaultValue || "00").split(":")[1],
+            selectedMinute: ((props.defaultValue || "00").split(":")[1] || "00"),
             timePeriod:
                 parseInt((props.defaultValue || "").split(":")[0]) < 10 ? "AM" : "PM",
         };

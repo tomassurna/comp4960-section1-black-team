@@ -321,7 +321,8 @@ class Count extends React.Component {
               width={"40%"}
               dataFormat={this.sessionFormatter}
               dataSort={true}
-            >
+              editable={ false }
+              >
               Session Info
             </TableHeaderColumn>
             <TableHeaderColumn
