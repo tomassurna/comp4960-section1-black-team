@@ -58,7 +58,9 @@ class SessionViewComponent extends React.Component {
                   -
                 </h5>
                 <h5 style={{ marginBottom: 0 }}>
-                  {this.state.session.room.name}
+                  {!!this.state.session.room
+                    ? this.state.session.room.name
+                    : ""}
                 </h5>
               </div>
               <div
@@ -80,6 +82,7 @@ class SessionViewComponent extends React.Component {
               session={this.state.session}
               closeModal={this.toggleModal.bind(this)}
               saveSessionCallback={this.saveSessionCallback.bind(this)}
+              username={this.props.username}
             />
           ) : (
             <></>

@@ -122,7 +122,7 @@ class CalendarPage extends React.Component {
                     <div className="card-header">
                         <h3 style={{display: "inline"}}>Calendar</h3>
                         <label className={"lunch-time-input-area"}>
-                            Lunch Time:
+                            <span style={{margin: "5px"}}>Lunch Time:</span>
                             <TimeEditor
                                 defaultValue={this.state.lunchTime}
                                 onUpdate={this.lunchTimeUpdate.bind(this)}
@@ -138,13 +138,16 @@ class CalendarPage extends React.Component {
                         .filter((session) => session["room"])
                         .filter((session) => session["timeSlot"])
                         .map((session) => {
+
+                            const speakerName = !!session["speaker"] ? session["speaker"]["speakerName"] : "";
+
                             return {
                                 borderColor: "transparent",
                                 color: randomColor({luminosity: "light", hue: "blue"}),
                                 description:
                                     session["sessionTitle"] +
                                     "\n" +
-                                    session["speaker"]["speakerName"],
+                                    speakerName,
                                 end: "2020-09-07T" + session["timeSlot"]["endTime"],
                                 id: session["id"],
                                 resourceId: session["room"]["id"],
@@ -152,8 +155,7 @@ class CalendarPage extends React.Component {
                                 textColor: "black",
                                 title:
                                     session["sessionTitle"] +
-                                    "\n" +
-                                    session["speaker"]["speakerName"],
+                                    "\n" + speakerName,
                             };
                         })
                         .concat([

@@ -100,7 +100,8 @@ class Login extends React.Component {
                               onClick={() =>
                                 this.props.authenticate(
                                   this.onLogin.bind(this),
-                                  this.state.password
+                                  this.state.password,
+                                  this.state.username
                                 )
                               }
                             >

@@ -19,7 +19,7 @@ class Content extends React.Component {
     };
   }
 
-  authenticate(callback, password) {
+  authenticate(callback, password, username) {
     $.ajax({
       method: "POST",
       url: "/DayOfPassword/authenticate",
@@ -27,7 +27,7 @@ class Content extends React.Component {
       type: "json",
       contentType: "application/json",
       success: (response) => {
-        this.setState({ isAuthenticated: true });
+        this.setState({ isAuthenticated: true, username: username });
 
         callback(response);
       },
@@ -52,7 +52,10 @@ class Content extends React.Component {
                         {!this.state.isAuthenticated ? (
                           <Redirect to="/" />
                         ) : (
-                          <route.component {...props} />
+                          <route.component
+                            {...props}
+                            username={this.state.username}
+                          />
                         )}
                       </CFade>
                     )}

@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
-import {HashRouter, Route, Switch} from 'react-router-dom';
-import './scss/style.scss';
+import React, { Component } from "react";
+import { HashRouter, Route, Switch } from "react-router-dom";
+import "./scss/style.scss";
 
 const loading = (
   <div className="pt-3 text-center">
@@ -8,17 +8,21 @@ const loading = (
   </div>
 );
 
-const TheLayout = React.lazy(() => import('./components/TheLayout'));
+const TheLayout = React.lazy(() => import("./components/TheLayout"));
 
 class App extends Component {
   render() {
     return (
       <HashRouter>
-          <React.Suspense fallback={loading}>
-            <Switch>
-              <Route path="/" name="Home" render={props => <TheLayout {...props}/>} />
-            </Switch>
-          </React.Suspense>
+        <React.Suspense fallback={loading}>
+          <Switch>
+            <Route
+              path="/"
+              name="Home"
+              render={(props) => <TheLayout {...props} />}
+            />
+          </Switch>
+        </React.Suspense>
       </HashRouter>
     );
   }

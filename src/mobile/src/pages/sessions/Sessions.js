@@ -10,6 +10,7 @@ class Sessions extends React.Component {
     this.state = {
       data: [],
       selectedTimeSlot: "",
+      username: props.username,
     };
 
     this.getData.bind(this);
@@ -64,6 +65,10 @@ class Sessions extends React.Component {
   }
 
   timeSlotFormatter(timeSlot) {
+    if (!timeSlot) {
+      return;
+    }
+
     return (
       this.timeFormatter(timeSlot.startTime) +
       " - " +
@@ -98,7 +103,9 @@ class Sessions extends React.Component {
                     .map((session) => session.timeSlot)
                     .value(),
                   "startTime"
-                ).map((timeSlot) => this.timeSlotFormatter(timeSlot))
+                )
+                  .filter((timeSlot) => !!timeSlot)
+                  .map((timeSlot) => this.timeSlotFormatter(timeSlot))
               ).map((timeSlot) => {
                 return (
                   <option key={timeSlot} value={timeSlot}>
@@ -112,6 +119,7 @@ class Sessions extends React.Component {
         <div className="card">
           <div className="card-body">
             {this.state.data
+              .filter((session) => !!session.timeSlot)
               .filter((session) =>
                 !!this.state.selectedTimeSlot
                   ? !!session.timeSlot &&
@@ -121,7 +129,11 @@ class Sessions extends React.Component {
               )
               .map((session) => {
                 return (
-                  <SessionViewComponent key={session.id} session={session} />
+                  <SessionViewComponent
+                    key={session.id}
+                    session={session}
+                    username={this.state.username}
+                  />
                 );
               })}
           </div>
